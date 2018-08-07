@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.laplacetech.android.laplacekline.MainActivity">
+
+    <!--<cn.laplacetech.klinelib.chart.TimeLineView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--</cn.laplacetech.klinelib.chart.TimeLineView>-->
+    <cn.laplacetech.klinelib.chart.KLineView
+        android:id="@+id/klineview"
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="340dp"/>
+</RelativeLayout>

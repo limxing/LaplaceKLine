@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main_color_red">#ff314a</color>
+    <color name="main_color_green">#21ce99</color>
+
+
+    <!--图表-->
+
+    <color name="marker_color">#be945c</color>
+    <color name="marker_text_color">#333333</color>
+    <color name="chart_grid_color">#333333</color>
+
+    <color name="ma5">#1890ff</color>
+    <color name="ma10">#ff8d1e</color>
+    <color name="ma20">#e970dc</color>
+    <color name="ma30">#7F9976</color>
+
+    <color name="dif">@color/ma5</color>
+    <color name="dea">@color/ma10</color>
+
+    <color name="k">@color/ma5</color>
+    <color name="d">@color/ma10</color>
+    <color name="j">@color/ma20</color>
+
+    <color name="increasing_color">@color/main_color_red</color>
+    <color name="decreasing_color">@color/main_color_green</color>
+    <color name="normal_line_color">#be945c</color>
+    <color name="ave_color">#666</color>
+    <color name="axis_color">#666</color>
+    <color name="chart_info_color">#60000000</color>
+    <color name="chart_no_data_color">#be945c</color>
+    <!--成交额图标的选中颜色-->
+    <color name="highlight_color">#000</color>
+    <color name="limit_color">#adadad</color>
+    <color name="white">#fff</color>
+    <color name="chart_border">#ccc</color>
+    <color name="kline_mark_bac">#F0F1F4</color>
+    <color name="kline_mark_border">#ddd</color>
+    <color name="kline_mark_text">#232631</color>
+</resources>
