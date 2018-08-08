@@ -45,17 +45,7 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
     var MIN_COUNT = 25
     var INIT_COUNT = 50
 
-    var isRedDown = false
-        set(value) {
-            if (value){
-                mDecreasingColor = ContextCompat.getColor(context, R.color.increasing_color)
-                mIncreasingColor = ContextCompat.getColor(context, R.color.decreasing_color)
-            }else{
-                mDecreasingColor = ContextCompat.getColor(context, R.color.decreasing_color)
-                mIncreasingColor = ContextCompat.getColor(context, R.color.increasing_color)
-            }
-        }
-
+    protected var isRedDown: Boolean = false
     protected var mData: ArrayList<HisData> = ArrayList<HisData>(300)
 
     open val lastData: HisData?
@@ -68,6 +58,17 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
         mTransparentColor = ContextCompat.getColor(getContext(), android.R.color.transparent)
         mDecreasingColor = ContextCompat.getColor(getContext(), R.color.decreasing_color)
         mIncreasingColor = ContextCompat.getColor(getContext(), R.color.increasing_color)
+    }
+
+    fun setIsRedDown(isRedDown: Boolean) {
+        this.isRedDown = isRedDown
+        if (isRedDown) {
+            mDecreasingColor = ContextCompat.getColor(context, R.color.increasing_color)
+            mIncreasingColor = ContextCompat.getColor(context, R.color.decreasing_color)
+        } else {
+            mDecreasingColor = ContextCompat.getColor(context, R.color.decreasing_color)
+            mIncreasingColor = ContextCompat.getColor(context, R.color.increasing_color)
+        }
     }
 
     protected fun initBottomChart(chart: CustomCombinedChart) {

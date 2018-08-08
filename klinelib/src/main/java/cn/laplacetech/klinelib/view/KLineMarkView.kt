@@ -284,17 +284,17 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         return when {
             num > 0 -> {
                 if (isRedDown){
-                    resources.getColor(mRiseColor)
-                }else {
                     resources.getColor(mDropColor)
+                }else {
+                    resources.getColor(mRiseColor)
                 }
 
             }
             num < 0 -> {
                 if (isRedDown){
-                    resources.getColor(mDropColor)
-                }else {
                     resources.getColor(mRiseColor)
+                }else {
+                    resources.getColor(mDropColor)
                 }
             }
             else -> resources.getColor(R.color.kline_mark_text)
