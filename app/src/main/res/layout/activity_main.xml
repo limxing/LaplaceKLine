@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="cn.laplacetech.android.laplacekline.MainActivity">
 
     <!--<cn.laplacetech.klinelib.chart.TimeLineView-->
@@ -16,4 +17,40 @@
         android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="340dp"/>
-</RelativeLayout>
+
+    <Button
+        android:id="@+id/one_minute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换到1分钟数据"/>
+    <Button
+        android:id="@+id/five_minutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换到5分钟数据"/>
+    <Button
+        android:id="@+id/fifteen_minutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换到15分钟数据"/>
+    <Button
+        android:id="@+id/one_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换到一小时数据"/>
+    <Button
+        android:id="@+id/four_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换到四小时数据"/>
+    <Button
+        android:id="@+id/twelve_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换到12小时数据"/>
+    <Button
+        android:id="@+id/one_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换到日数据"/>
+</LinearLayout>

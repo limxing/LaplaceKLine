@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import cn.laplacetech.klinelib.model.HisData
 import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.JSON.parseObject
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -17,14 +16,41 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        klineview.setDateFormat("yyyy-MM-dd")//设置时间轴 时间的format
-        klineview.showVolume()
+       //设置时间轴 时间的format
 
-        klineview.initData(get1Day(this))
+
+        one_minute.setOnClickListener {
+            klineview.setDateFormat("HH:mm")
+            klineview.initData(get1Day(this,R.raw.one_minute))
+        }
+        five_minutes.setOnClickListener {
+            klineview.setDateFormat("HH:mm")
+            klineview.initData(get1Day(this,R.raw.five_minutes))
+        }
+        fifteen_minutes.setOnClickListener {
+            klineview.setDateFormat("HH:mm")
+            klineview.initData(get1Day(this,R.raw.fifteen_minutes))
+        }
+        one_hour.setOnClickListener {
+            klineview.setDateFormat("MM-dd HH:mm")
+            klineview.initData(get1Day(this,R.raw.one_hour))
+        }
+        four_hours.setOnClickListener {
+            klineview.setDateFormat("MM-dd HH:mm")
+            klineview.initData(get1Day(this,R.raw.four_hours))
+        }
+        twelve_hours.setOnClickListener {
+            klineview.setDateFormat("MM-dd HH:mm")
+            klineview.initData(get1Day(this,R.raw.twelve_hours))
+        }
+        one_day.setOnClickListener {
+            klineview.setDateFormat("yyyy-MM-dd")
+            klineview.initData(get1Day(this,R.raw.oneday))
+        }
     }
 
-    fun get1Day(context: Context): List<HisData> {
-        val `is` = context.resources.openRawResource(R.raw.oneday)
+    fun get1Day(context: Context, oneday: Int): List<HisData> {
+        val `is` = context.resources.openRawResource(oneday)
         val writer = StringWriter()
         val buffer = CharArray(1024)
         try {
