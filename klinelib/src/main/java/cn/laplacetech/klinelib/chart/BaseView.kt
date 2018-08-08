@@ -45,6 +45,17 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
     var MIN_COUNT = 25
     var INIT_COUNT = 50
 
+    var isRedDown = false
+        set(value) {
+            if (value){
+                mDecreasingColor = ContextCompat.getColor(context, R.color.increasing_color)
+                mIncreasingColor = ContextCompat.getColor(context, R.color.decreasing_color)
+            }else{
+                mDecreasingColor = ContextCompat.getColor(context, R.color.decreasing_color)
+                mIncreasingColor = ContextCompat.getColor(context, R.color.increasing_color)
+            }
+        }
+
     protected var mData: ArrayList<HisData> = ArrayList<HisData>(300)
 
     open val lastData: HisData?

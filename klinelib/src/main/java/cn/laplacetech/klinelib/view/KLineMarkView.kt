@@ -281,8 +281,21 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun getColorByRatio(num: Double): Int {
         return when {
-            num > 0 -> resources.getColor(mRiseColor)
-            num < 0 -> resources.getColor(mDropColor)
+            num > 0 -> {
+                if (isRedDown){
+                    resources.getColor(mRiseColor)
+                }else {
+                    resources.getColor(mDropColor)
+                }
+
+            }
+            num < 0 -> {
+                if (isRedDown){
+                    resources.getColor(mDropColor)
+                }else {
+                    resources.getColor(mRiseColor)
+                }
+            }
             else -> resources.getColor(R.color.kline_mark_text)
         }
     }
@@ -303,8 +316,12 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private var dataFormatString: String = "yyyy-MM-dd HH:mm"
 
-    fun setDataFormatString(mDateFormat: String) {
+
+    private var isRedDown: Boolean = false
+
+    fun setDataFormatString(mDateFormat: String, redDown: Boolean) {
         this.dataFormatString = mDateFormat
+        this.isRedDown = redDown
     }
 
     fun getDataFormatString(): String {

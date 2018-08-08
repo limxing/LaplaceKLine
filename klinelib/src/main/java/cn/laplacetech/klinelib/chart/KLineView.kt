@@ -32,7 +32,6 @@ import cn.laplacetech.klinelib.util.DataUtils
 import cn.laplacetech.klinelib.util.DateUtils
 import cn.laplacetech.klinelib.util.DisplayUtils
 import cn.laplacetech.klinelib.util.DoubleUtil
-import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.view_kline.view.*
 
@@ -78,7 +77,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         setOffset()
         initChartListener()
         showVolume()
-        Logger.addLogAdapter(AndroidLogAdapter())
+//        Logger.addLogAdapter(AndroidLogAdapter())
+        price_chart.isLogEnabled = false
+        vol_chart.isLogEnabled = false
         postDelayed({
             val time = System.currentTimeMillis()
             val list = ArrayList<HisData>()
@@ -281,7 +282,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
                     hisData?.k, hisData?.d, hisData?.j))
 
         //为蒙版设置时间格式化
-        k_info_mark.setDataFormatString(mDateFormat)
+        k_info_mark.setDataFormatString(mDateFormat,isRedDown)
 
     }
 
@@ -348,7 +349,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         barDataSet.setDrawValues(false)
         barDataSet.isVisible = type != INVISIABLE_LINE
         barDataSet.isHighlightEnabled = type != INVISIABLE_LINE
-        barDataSet.setColors(resources.getColor(R.color.increasing_color), resources.getColor(R.color.decreasing_color))
+        barDataSet.setColors(mIncreasingColor, mDecreasingColor)
         return barDataSet
     }
 
@@ -436,7 +437,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         set.shadowColorSameAsCandle = true
         set.increasingColor = mIncreasingColor
         set.increasingPaintStyle = Paint.Style.FILL
-        set.neutralColor = ContextCompat.getColor(context, R.color.increasing_color)
+        set.neutralColor = mIncreasingColor
         set.setDrawValues(true)
         set.valueTextSize = 10f
         set.isHighlightEnabled = true
