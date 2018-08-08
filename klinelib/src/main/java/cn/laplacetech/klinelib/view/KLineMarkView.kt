@@ -157,14 +157,14 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         paint.style = Paint.Style.FILL
 //        头部
         paint.color = resources.getColor(R.color.kline_mark_text)
-
+        paint.getTextBounds(timeTitle, 0, timeTitle.length, textR)
 
         var x = bacRect.left + (bacRect.width() - textR.width()) / 2f
         var y = bacRect.top + 10f * density
 
 
 
-        canvas.drawText(time, x, y, paint)
+        canvas.drawText(timeTitle, x, y, paint)
 
 //        超大单
 //        paint.style = Paint.Style.FILL
@@ -242,6 +242,8 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
 //    private var highlight: Highlight? = null
 
+    private lateinit var timeTitle: String
+
     /**
      *
      */
@@ -259,6 +261,7 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         this.info.add(TextBean(DoubleUtil.amountConversion(info?.change ?: 0.0), getColorByRatio(info?.change ?: 0.0)))
         this.info.add(TextBean(DoubleUtil.amountConversion(info?.change_ratio ?: 0.0), getColorByRatio(info?.change_ratio ?: 0.0)))
         this.time = DateUtils.formatDate(info?.date ?: 0, dataFormatString)
+        this.timeTitle = DateUtils.formatDate(info?.date ?: 0,"yyyy-MM-dd HH:mm")
 
         xPx = h.xPx.toInt()
         yPx = h.yPx.toInt()

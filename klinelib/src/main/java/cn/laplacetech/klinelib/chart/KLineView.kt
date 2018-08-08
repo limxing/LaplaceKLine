@@ -110,8 +110,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         price_chart.setBorderColor(resources.getColor(R.color.chart_border))
         price_chart.isDragEnabled = true
         price_chart.isScaleYEnabled = false
-        price_chart.isAutoScaleMinMaxEnabled = true
+        price_chart.isAutoScaleMinMaxEnabled = true//没用到啊
         price_chart.isDragDecelerationEnabled = false//是否滑动
+        price_chart.isHighlightPerDragEnabled = false
         price_chart.description.isEnabled = false
         val mvx = LineChartXMarkerView(mContext, mData)
         mvx.chartView = price_chart
@@ -215,11 +216,11 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     fun initData(hisDatas: List<HisData>) {
         mData.clear()
         mData.addAll(DataUtils.calculateHisData(hisDatas))
-        if (mData.size< MAX_COUNT_FLAG){
-            setCount(INIT_COUNT, MAX_COUNT_FLAG, MIN_COUNT)//最大就是集合的大小，初始化当前
-        }else {
-            setCount(INIT_COUNT, mData.size, MIN_COUNT)//最大就是集合的大小，初始化当前
-        }
+//        if (mData.size< MAX_COUNT_FLAG){
+//            setCount(INIT_COUNT, MAX_COUNT_FLAG, MIN_COUNT)//最大就是集合的大小，初始化当前
+//        }else {
+        setCount(INIT_COUNT, mData.size, MIN_COUNT)//最大就是集合的大小，初始化当前
+//        }
         price_chart.realCount = mData.size
 
         Logger.i("数组的大小：${mData.size}")
