@@ -31,7 +31,7 @@ import java.util.ArrayList
 
 open class BaseView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
-    var mDateFormat = "yyyy-MM-dd HH:mm"
+    var mDateFormat = "yyyy-MM-dd"
 
     protected var mDecreasingColor: Int = 0
     protected var mIncreasingColor: Int = 0
@@ -60,6 +60,7 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     protected fun initBottomChart(chart: CustomCombinedChart) {
+        chart.setNoDataText("")
         chart.setScaleEnabled(true)
         chart.setDrawBorders(true)
         chart.setBorderWidth(0.5f)

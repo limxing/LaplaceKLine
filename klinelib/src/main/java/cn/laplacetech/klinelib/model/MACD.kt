@@ -44,7 +44,7 @@ class MACD
         var mACD = 0.0
         if (kLineBeen != null && kLineBeen.size > 0) {
             for (i in kLineBeen.indices) {
-                close = kLineBeen[i].close!!
+                close = kLineBeen[i].close ?: 0.0
                 if (i == 0) {
                     eMA12 = close
                     eMA26 = close

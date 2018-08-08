@@ -19,9 +19,9 @@ class RSV(OHLCData: List<HisData>?, private val n: Int) {
 
             for (i in OHLCData.indices.reversed()) {
                 val oHLCEntity = OHLCData[i]
-                high = oHLCEntity.high!!
-                low = oHLCEntity.low!!
-                close = oHLCEntity.close!!
+                high = oHLCEntity.high ?: 0.0
+                low = oHLCEntity.low ?: 0.0
+                close = oHLCEntity.close ?: 0.0
                 if (OHLCData.size - i < n) {
                     for (j in 0 until OHLCData.size - i) {
                         val oHLCEntity1 = OHLCData[i + j]

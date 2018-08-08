@@ -59,17 +59,17 @@ object DataUtils {
             hisData.k = k[i]
             hisData.j = j[i]
 
-            amountVol += hisData.vol!!
+            amountVol += hisData.vol ?: 0.0
             hisData.amountVol = amountVol
             when {
                 i > 0 -> {
-                    val total = hisData.vol!! * hisData.close!! + list[i - 1].total!!
+                    val total = hisData.vol ?: 0.0 * (hisData.close ?: 0.0) + (list[i - 1].total ?: 0.0)
                     hisData.total = total
                     val avePrice = total / amountVol
                     hisData.avePrice = avePrice
                 }
                 lastData != null -> {
-                    val total = hisData.vol!! * hisData.close!! + lastData.total!!
+                    val total = hisData.vol ?: 0.0 * (hisData.close ?: 0.0) + (lastData.total?: 0.0)
                     hisData.total = total
                     val avePrice = total / amountVol
                     hisData.avePrice = avePrice
@@ -77,7 +77,7 @@ object DataUtils {
                 else -> {
                     hisData.amountVol = hisData.vol
                     hisData.avePrice = hisData.close
-                    hisData.total = hisData.amountVol!! * hisData.avePrice!!
+                    hisData.total = hisData.amountVol ?: 0.0 * (hisData.avePrice ?: 0.0)
                 }
             }
 
@@ -140,7 +140,7 @@ object DataUtils {
                 i++
                 continue
             }
-            val sum = (0 until dayCount).sumByDouble { data[i - it].vol!! }
+            val sum = (0 until dayCount).sumByDouble { data[i - it].vol ?: 0.0 }
             result.add(+(sum / dayCount))
             i++
         }
@@ -164,7 +164,7 @@ object DataUtils {
                 i++
                 continue
             }
-            val sum = (0 until dayCount).sumByDouble { data[i - it].open!! }
+            val sum = (0 until dayCount).sumByDouble { data[i - it].open ?: 0.0 }
             result.add(+(sum / dayCount))
             i++
         }

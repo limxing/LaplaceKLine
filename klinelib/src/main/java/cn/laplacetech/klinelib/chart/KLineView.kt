@@ -80,6 +80,19 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         initChartListener()
         showVolume()
         Logger.addLogAdapter(AndroidLogAdapter())
+        postDelayed({
+            val time = System.currentTimeMillis()
+            val list = ArrayList<HisData>()
+            val day = 60 * 60 * 24 * 1000
+            for (i in 0..MAX_COUNT_FLAG) {
+                val hisData = HisData()
+                hisData.date = time - day * i
+                list.add(hisData)
+            }
+            list.reverse()
+            initData(list)
+
+        }, 100)
     }
 
     fun showKdj() {
@@ -310,7 +323,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         }, 100)
 
         val hisData = lastData
-        setDescription(vol_chart, "VOL " + hisData?.vol?.let { DoubleUtil.amountConversion(it) })
+        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData?.vol ?: 0.0))
         kLineViewListener?.onMaChanged(hisData)
         if (price_chart.description.isEnabled) {
             setDescription(price_chart, String.format(Locale.getDefault(), "MA5:%.2f  MA10:%.2f  MA20:%.2f  MA30:%.2f", hisData?.ma5, hisData?.ma10, hisData?.ma20, hisData?.ma30))
@@ -784,7 +797,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         if (price_chart.description.isEnabled)
             setDescription(price_chart, String.format(Locale.getDefault(), "MA5:%.2f  MA10:%.2f  MA20:%.2f  MA30:%.2f",
                     hisData.ma5, hisData.ma10, hisData.ma20, hisData.ma30))
-        setDescription(vol_chart, "VOL " + hisData.vol?.let { DoubleUtil.amountConversion(it) })
+        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData?.vol ?: 0.0))
         if (macd_chart.description.isEnabled)
             setDescription(macd_chart, String.format(Locale.getDefault(), "MACD:%.2f  DEA:%.2f  DIF:%.2f",
                     hisData.macd, hisData.dea, hisData.dif))

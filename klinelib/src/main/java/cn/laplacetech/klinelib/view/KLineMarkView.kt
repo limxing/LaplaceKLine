@@ -254,10 +254,10 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         this.isRight = h.xPx > measuredWidth / 2
 
         val normalColor = resources.getColor(R.color.kline_mark_text)
-        this.info.add(TextBean(info?.open.toString(), normalColor))
-        this.info.add(TextBean(info?.high.toString(), normalColor))
-        this.info.add(TextBean(info?.low.toString(), normalColor))
-        this.info.add(TextBean(info?.close.toString(), normalColor))
+        this.info.add(TextBean((info?.open ?: 0.00).toString(), normalColor))
+        this.info.add(TextBean((info?.high ?: 0.00).toString(), normalColor))
+        this.info.add(TextBean((info?.low ?: 0.00).toString(), normalColor))
+        this.info.add(TextBean((info?.close ?: 0.00).toString(), normalColor))
         this.info.add(TextBean(DoubleUtil.amountConversion(info?.change ?: 0.0), getColorByRatio(info?.change ?: 0.0)))
         this.info.add(TextBean(DoubleUtil.amountConversion(info?.change_ratio ?: 0.0), getColorByRatio(info?.change_ratio ?: 0.0)))
         this.time = DateUtils.formatDate(info?.date ?: 0, dataFormatString)
