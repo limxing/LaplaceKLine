@@ -1,50 +1,88 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <cn.laplacetech.klinelib.chart.CustomCombinedChart
-        android:id="@+id/vol_chart"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_chart_height"
-        android:layout_gravity="bottom" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <TextView
+            android:id="@+id/tv_ma5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MA5:--"
+            android:textColor="@color/ma5"
+            android:textSize="@dimen/ma_tv_size" />
 
-    <cn.laplacetech.klinelib.chart.CustomCombinedChart
-        android:id="@+id/macd_chart"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_chart_height"
-        android:layout_gravity="bottom" />
+        <TextView
+            android:id="@+id/tv_ma10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/ma_left_pad"
+            android:text="MA10:--"
+            android:textColor="@color/ma10"
+            android:textSize="@dimen/ma_tv_size" />
 
-    <cn.laplacetech.klinelib.chart.CustomCombinedChart
-        android:id="@+id/kdj_chart"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_chart_height"
-        android:layout_gravity="bottom" />
+        <TextView
+            android:id="@+id/tv_ma20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/ma_left_pad"
+            android:text="MA20:--"
+            android:textColor="@color/ma20"
+            android:textSize="@dimen/ma_tv_size" />
 
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="20dp">
+        android:orientation="vertical">
 
         <cn.laplacetech.klinelib.chart.CustomCombinedChart
-            android:id="@+id/price_chart"
+            android:id="@+id/vol_chart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="@dimen/bottom_chart_height"
+            android:layout_gravity="bottom" />
 
 
-        <!--<cn.laplacetech.klinelib.chart.KLineChartInfoView-->
+        <cn.laplacetech.klinelib.chart.CustomCombinedChart
+            android:id="@+id/macd_chart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_chart_height"
+            android:layout_gravity="bottom" />
+
+        <cn.laplacetech.klinelib.chart.CustomCombinedChart
+            android:id="@+id/kdj_chart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_chart_height"
+            android:layout_gravity="bottom" />
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="20dp">
+
+
+            <cn.laplacetech.klinelib.chart.CustomCombinedChart
+                android:id="@+id/price_chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+            <!--<cn.laplacetech.klinelib.chart.KLineChartInfoView-->
             <!--android:id="@+id/k_info"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="match_parent"-->
             <!--android:visibility="gone" />-->
 
-        <cn.laplacetech.klinelib.view.KLineMarkView
-            android:id="@+id/k_info_mark"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            <cn.laplacetech.klinelib.view.KLineMarkView
+                android:id="@+id/k_info_mark"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
     </FrameLayout>
-
-</FrameLayout>
+</LinearLayout>

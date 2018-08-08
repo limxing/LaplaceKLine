@@ -270,6 +270,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
         val hisData = lastData
         setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData?.vol ?: 0.0))
+        setMADescriptions(hisData?.ma5, hisData?.ma10, hisData?.ma20)
         kLineViewListener?.onMaChanged(hisData)
         if (price_chart.description.isEnabled) {
             setDescription(price_chart, String.format(Locale.getDefault(), "MA5:%.2f  MA10:%.2f  MA20:%.2f  MA30:%.2f", hisData?.ma5, hisData?.ma10, hisData?.ma20, hisData?.ma30))
@@ -282,8 +283,18 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
                     hisData?.k, hisData?.d, hisData?.j))
 
         //为蒙版设置时间格式化
-        k_info_mark.setDataFormatString(mDateFormat,isRedDown)
+        k_info_mark.setDataFormatString(mDateFormat, isRedDown)
 
+    }
+
+    /**
+     * 设置均线描述文字
+     */
+    private fun setMADescriptions(ma5: Double?, ma10: Double?, ma20: Double?) {
+
+        tv_ma5.text = "MA5: ${DoubleUtil.amountConversion(ma5 ?: 0.0)}"
+        tv_ma10.text = "MA10: ${DoubleUtil.amountConversion(ma10 ?: 0.0)}"
+        tv_ma20.text = "MA20: ${DoubleUtil.amountConversion(ma20 ?: 0.0)}"
     }
 
     private fun initChartPriceData(): CombinedData {
@@ -796,7 +807,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         if (price_chart.description.isEnabled)
             setDescription(price_chart, String.format(Locale.getDefault(), "MA5:%.2f  MA10:%.2f  MA20:%.2f  MA30:%.2f",
                     hisData.ma5, hisData.ma10, hisData.ma20, hisData.ma30))
-        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData?.vol ?: 0.0))
+        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol ?: 0.0))
+        setMADescriptions(hisData.ma5, hisData.ma10, hisData.ma20)
         if (macd_chart.description.isEnabled)
             setDescription(macd_chart, String.format(Locale.getDefault(), "MACD:%.2f  DEA:%.2f  DIF:%.2f",
                     hisData.macd, hisData.dea, hisData.dif))
@@ -903,6 +915,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     fun updateValueSelected(hisData: HisData) {
         setDescription(vol_chart, "VOL " + hisData.vol?.let { DoubleUtil.amountConversion(it) })
         kLineViewListener?.onMaChanged(hisData)
-
+        setMADescriptions(hisData.ma5, hisData.ma10, hisData.ma20)
     }
 }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="bottom_chart_height">100dp</dimen>
+    <dimen name="bottom_chart_height">90dp</dimen>
     <dimen name="highlight_width" >0.5dp</dimen>
+    <dimen name="ma_tv_size">10sp</dimen>
+    <dimen name="ma_left_pad">10dp</dimen>
 </resources>

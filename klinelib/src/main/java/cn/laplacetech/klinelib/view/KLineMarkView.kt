@@ -103,13 +103,14 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
             paint.getTextBounds(time, 0, time.length, textR)
             paint.color = resources.getColor(R.color.ma5)
             paint.style = Paint.Style.FILL
-            val timeY = measuredHeight - 90 * density
+
+            val timeY = measuredHeight - resources.getDimension(R.dimen.bottom_chart_height) + 10 * density
             val textW2 = textR.width() / 2 + 3 * density
 
             hightTimeRect.left = xPx - textW2
-            hightTimeRect.top = timeY - 8 * density
+            hightTimeRect.top = timeY.toInt() - 8 * density
             hightTimeRect.right = xPx + textW2
-            hightTimeRect.bottom = timeY + 8 * density
+            hightTimeRect.bottom = timeY.toInt() + 8 * density
 
             if (hightTimeRect.left < 0) {
                 hightTimeRect.left = 0
