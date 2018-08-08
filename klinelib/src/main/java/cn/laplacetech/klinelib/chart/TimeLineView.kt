@@ -7,10 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 
 import com.github.mikephil.charting.charts.BarLineChartBase
-import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LimitLine
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -22,7 +19,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.utils.Transformer
 import cn.laplacetech.klinelib.R
 import cn.laplacetech.klinelib.model.HisData
 import cn.laplacetech.klinelib.util.DataUtils
@@ -38,7 +34,7 @@ import java.util.Locale
  * Created by lilifeng@laplacetech.cn on 2017/10/26.
  */
 class TimeLineView @JvmOverloads constructor(protected var mContext: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : BaseView(mContext, attrs, defStyleAttr), CoupleChartGestureListener.OnAxisChangeListener {
-    override fun onAxisTranslate(dX: Float, dY: Float) {
+    override fun onAxisTranslate(dX: BarLineChartBase<*>) {
 
     }
 

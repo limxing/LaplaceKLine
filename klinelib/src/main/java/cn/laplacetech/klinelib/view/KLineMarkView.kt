@@ -28,6 +28,7 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (mLineCharts != null) {
             for (chart in mLineCharts!!) {
                 chart.highlightValue(null)
+
             }
         }
     }
@@ -261,7 +262,7 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         this.info.add(TextBean(DoubleUtil.amountConversion(info?.change ?: 0.0), getColorByRatio(info?.change ?: 0.0)))
         this.info.add(TextBean(DoubleUtil.amountConversion(info?.change_ratio ?: 0.0), getColorByRatio(info?.change_ratio ?: 0.0)))
         this.time = DateUtils.formatDate(info?.date ?: 0, dataFormatString)
-        this.timeTitle = DateUtils.formatDate(info?.date ?: 0,"yyyy-MM-dd HH:mm")
+        this.timeTitle = DateUtils.formatDate(info?.date ?: 0, "yyyy-MM-dd HH:mm")
 
         xPx = h.xPx.toInt()
         yPx = h.yPx.toInt()
@@ -318,9 +319,14 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private var lastDx: Int = 0
 
-    fun translate(dX: Float, dY: Float) {
-        if (this.info.size == 0 ) return
-        this.xPx = xPx + (dX.toInt() - lastDx)
-        invalidate()
+    fun translate(highlighted: Array<Highlight>) {
+        if (highlighted.isNotEmpty() && info.size > 0) {
+            xPx = highlighted[0].xPx.toInt()
+            yPx = highlighted[0].yPx.toInt()
+            invalidate()
+
+        }
+//        if (this.info.size == 0 ) return
+//        this.xPx = xPx + (dX.toInt() - lastDx)
     }
 }

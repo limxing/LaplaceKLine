@@ -6,7 +6,6 @@ import android.graphics.Paint
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 
@@ -84,7 +83,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
             val time = System.currentTimeMillis()
             val list = ArrayList<HisData>()
             val day = 60 * 60 * 24 * 1000
-            for (i in 0..MAX_COUNT_FLAG) {
+            for (i in 0..1000) {
                 val hisData = HisData()
                 hisData.date = time - day * i
                 list.add(hisData)
@@ -237,6 +236,56 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         price_chart.realCount = mData.size
 
         Logger.i("数组的大小：${mData.size}")
+
+
+        initChartPriceData()
+        initChartVolumeData()
+//        initChartMacdData()
+//        initChartKdjData()
+
+
+//        macd_chart.xAxis.axisMaximum = macd_chart.data.xMax + 0.5f
+//        kdj_chart.xAxis.axisMaximum = kdj_chart.data.xMax + 0.5f
+
+
+        //设置当前缩放程度
+        for (i in 0..2) {
+            price_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())//设置可放大的最大程度
+            vol_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())
+
+            val currentScale = MAX_COUNT * 1f / INIT_COUNT
+            val lastScale = price_chart.viewPortHandler.scaleX
+            Logger.i("$lastScale  $currentScale")
+
+            val toScale = currentScale / lastScale
+
+            price_chart.zoom(toScale, 0f, 0f, 0f)
+            vol_chart.zoom(toScale, 0f, 0f, 0f)
+            //            macd_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
+//            kdj_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
+
+        }
+
+
+        val hisData = lastData
+        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData?.vol ?: 0.0))
+        kLineViewListener?.onMaChanged(hisData)
+        if (price_chart.description.isEnabled) {
+            setDescription(price_chart, String.format(Locale.getDefault(), "MA5:%.2f  MA10:%.2f  MA20:%.2f  MA30:%.2f", hisData?.ma5, hisData?.ma10, hisData?.ma20, hisData?.ma30))
+        }
+        if (macd_chart.description.isEnabled)
+            setDescription(macd_chart, String.format(Locale.getDefault(), "MACD:%.2f  DEA:%.2f  DIF:%.2f",
+                    hisData?.macd, hisData?.dea, hisData?.dif))
+        if (kdj_chart.description.isEnabled)
+            setDescription(kdj_chart, String.format(Locale.getDefault(), "K:%.2f  D:%.2f  J:%.2f",
+                    hisData?.k, hisData?.d, hisData?.j))
+
+        //为蒙版设置时间格式化
+        k_info_mark.setDataFormatString(mDateFormat)
+
+    }
+
+    private fun initChartPriceData(): CombinedData {
         val lineCJEntries = ArrayList<CandleEntry>(INIT_COUNT)
         val ma5Entries = ArrayList<Entry>(INIT_COUNT)
         val ma10Entries = ArrayList<Entry>(INIT_COUNT)
@@ -282,62 +331,12 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         combinedData.setData(lineData)
         combinedData.setData(candleData)
         price_chart.data = combinedData
+
         price_chart.notifyDataSetChanged()
-        moveToLast(price_chart)
-
-
-        initChartVolumeData()
-//        initChartMacdData()
-//        initChartKdjData()
-
-        price_chart.xAxis.axisMaximum = combinedData.xMax + 0.5f
-        vol_chart.xAxis.axisMaximum = vol_chart.data.xMax + 0.5f
-//        macd_chart.xAxis.axisMaximum = macd_chart.data.xMax + 0.5f
-//        kdj_chart.xAxis.axisMaximum = kdj_chart.data.xMax + 0.5f
-
-        //设置当前缩放程度
-
-
-        val currentScale = MAX_COUNT * 1f / INIT_COUNT
-        val lastScale = price_chart.viewPortHandler.scaleX
-        Logger.i("$lastScale  $currentScale")
-
-        val toScale = currentScale / lastScale
-
-        price_chart.zoom(toScale, 0f, 0f, 0f)
-        vol_chart.zoom(toScale, 0f, 0f, 0f)
-//            macd_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
-//            kdj_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
-
-
-        price_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())//设置可放大的最大程度
-        vol_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())
-
-
+        price_chart.xAxis.axisMaximum = price_chart.data.xMax + 0.5f
         price_chart.moveViewToX(mData.size - 1f)
-        vol_chart.moveViewToX(mData.size - 1f)
-
-        postDelayed({
-            price_chart.invalidate()
-            vol_chart.invalidate()
-        }, 100)
-
-        val hisData = lastData
-        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData?.vol ?: 0.0))
-        kLineViewListener?.onMaChanged(hisData)
-        if (price_chart.description.isEnabled) {
-            setDescription(price_chart, String.format(Locale.getDefault(), "MA5:%.2f  MA10:%.2f  MA20:%.2f  MA30:%.2f", hisData?.ma5, hisData?.ma10, hisData?.ma20, hisData?.ma30))
-        }
-        if (macd_chart.description.isEnabled)
-            setDescription(macd_chart, String.format(Locale.getDefault(), "MACD:%.2f  DEA:%.2f  DIF:%.2f",
-                    hisData?.macd, hisData?.dea, hisData?.dif))
-        if (kdj_chart.description.isEnabled)
-            setDescription(kdj_chart, String.format(Locale.getDefault(), "K:%.2f  D:%.2f  J:%.2f",
-                    hisData?.k, hisData?.d, hisData?.j))
-
-        //为蒙版设置时间格式化
-        k_info_mark.setDataFormatString(mDateFormat)
-
+//        moveToLast(price_chart)
+        return combinedData
     }
 
 
@@ -454,7 +453,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     /**
      * 初始化交易额的图表
      */
-    private fun initChartVolumeData() {
+    private fun initChartVolumeData(): CombinedData {
         val barEntries = ArrayList<BarEntry>()
         val ma5Entries = ArrayList<Entry>()
         val ma10Entries = ArrayList<Entry>()
@@ -488,11 +487,10 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         combinedData.setData(lineData)
 
         vol_chart.data = combinedData
-
-
         vol_chart.notifyDataSetChanged()
-        moveToLast(vol_chart)
-
+        vol_chart.xAxis.axisMaximum = vol_chart.data.xMax + 0.5f
+        vol_chart.moveViewToX(mData.size - 1f)
+        return combinedData
     }
 
     private fun initChartMacdData() {
@@ -841,7 +839,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     }
 
 
-    private var lastIndex = 0
     override fun onAxisChange(chart: BarLineChartBase<*>) {
         val lowestVisibleX = chart.lowestVisibleX
         if (lowestVisibleX <= chart.xAxis.axisMinimum) return
@@ -850,11 +847,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         val hisData = mData[if (x < 0) 0 else x]
         setChartDescription(hisData)
         k_info_mark.closeHightLight()
-        lastIndex = x
     }
 
-    override fun onAxisTranslate(dX: Float, dY: Float) {
-
+    override fun onAxisTranslate(chart: BarLineChartBase<*>) {
 //        k_info_mark.translate(price_chart.,dY)
     }
 
