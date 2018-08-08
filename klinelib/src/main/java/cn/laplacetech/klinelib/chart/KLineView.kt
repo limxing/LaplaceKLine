@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 
@@ -32,6 +33,8 @@ import cn.laplacetech.klinelib.util.DataUtils
 import cn.laplacetech.klinelib.util.DateUtils
 import cn.laplacetech.klinelib.util.DisplayUtils
 import cn.laplacetech.klinelib.util.DoubleUtil
+import com.orhanobut.logger.AndroidLogAdapter
+import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.view_kline.view.*
 
 import java.util.ArrayList
@@ -74,6 +77,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         initBottomChart(kdj_chart)
         setOffset()
         initChartListener()
+        showVolume()
+        Logger.addLogAdapter(AndroidLogAdapter())
     }
 
     fun showKdj() {
@@ -199,9 +204,18 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         price_chart.setOnTouchListener(ChartInfoViewHandler(price_chart))
     }
 
+
+
+    /**
+     * 初始化方法
+     */
     fun initData(hisDatas: List<HisData>) {
+        Logger.i("${hisDatas.size}")
         mData.clear()
         mData.addAll(DataUtils.calculateHisData(hisDatas))
+
+        setCount(INIT_COUNT, mData.size, MIN_COUNT)//最大就是集合的大小，初始化当前
+
         price_chart.realCount = mData.size
 
         val lineCJEntries = ArrayList<CandleEntry>(INIT_COUNT)
@@ -238,7 +252,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         }
 
         val lineData = LineData(
-                //                setLine(INVISIABLE_LINE, paddingEntries),
+                setLine(INVISIABLE_LINE, paddingEntries),
                 setLine(MA5, ma5Entries),
                 setLine(MA10, ma10Entries),
                 setLine(MA20, ma20Entries)
@@ -250,22 +264,47 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         combinedData.setData(candleData)
         price_chart.data = combinedData
 
-        price_chart.setVisibleXRange(MAX_COUNT.toFloat(), MIN_COUNT.toFloat())
+
+        Logger.i("${price_chart.xAxis.mAxisRange}")
+//        = 0f
+
         price_chart.notifyDataSetChanged()
         moveToLast(price_chart)
+
+
         initChartVolumeData()
-        initChartMacdData()
-        initChartKdjData()
+//        initChartMacdData()
+//        initChartKdjData()
 
         price_chart.xAxis.axisMaximum = combinedData.xMax + 0.5f
         vol_chart.xAxis.axisMaximum = vol_chart.data.xMax + 0.5f
-        macd_chart.xAxis.axisMaximum = macd_chart.data.xMax + 0.5f
-        kdj_chart.xAxis.axisMaximum = kdj_chart.data.xMax + 0.5f
+//        macd_chart.xAxis.axisMaximum = macd_chart.data.xMax + 0.5f
+//        kdj_chart.xAxis.axisMaximum = kdj_chart.data.xMax + 0.5f
 
-        price_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
-        vol_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
-        macd_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
-        kdj_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
+        //设置当前缩放程度
+
+
+        val lastScale = price_chart.viewPortHandler.scaleX
+        val currentScale = MAX_COUNT * 1f / INIT_COUNT
+
+        var toScale = currentScale / lastScale
+        if (lastScale == 0f){
+            toScale = currentScale
+        }
+
+        Logger.i("$lastScale   $currentScale  $toScale")
+        price_chart.zoom(toScale, 0f, 0f, 0f)
+        vol_chart.zoom(toScale, 0f, 0f, 0f)
+//            macd_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
+//            kdj_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
+
+
+        val minScale = price_chart.xAxis.mAxisRange / MAX_COUNT
+        val maxScale = price_chart.xAxis.mAxisRange / MIN_COUNT
+        Logger.i("$minScale = $maxScale")
+        price_chart.setVisibleXRange(MAX_COUNT.toFloat(), MIN_COUNT.toFloat())//设置可放大的最大程度
+        vol_chart.setVisibleXRange(MAX_COUNT.toFloat(), MIN_COUNT.toFloat())
+
 
         val hisData = lastData
         setDescription(vol_chart, "VOL " + hisData?.vol?.let { DoubleUtil.amountConversion(it) })
@@ -400,9 +439,10 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
      */
     private fun initChartVolumeData() {
         val barEntries = ArrayList<BarEntry>()
-        val ma5Entries = ArrayList<Entry>(INIT_COUNT)
-        val ma10Entries = ArrayList<Entry>(INIT_COUNT)
+        val ma5Entries = ArrayList<Entry>()
+        val ma10Entries = ArrayList<Entry>()
         val paddingEntries = ArrayList<BarEntry>()
+
         for (i in mData.indices) {
             val hisData = mData[i]
             barEntries.add(BarEntry(i.toFloat(), hisData.vol?.toFloat() ?: 0f, hisData))
@@ -415,6 +455,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
             }
         }
         val maxCount = MAX_COUNT
+
         if (!mData.isEmpty() && mData.size < maxCount) {
             (mData.size until maxCount).mapTo(paddingEntries) { BarEntry(it.toFloat(), 0f) }
         }
@@ -428,14 +469,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
         val lineData = LineData(setLine(MA5, ma5Entries), setLine(MA10, ma10Entries))
         combinedData.setData(lineData)
-//        VOL 表的Y轴格式化
-//        combinedData.setValueFormatter { value, entry, dataSetIndex, viewPortHandler ->
-//            DoubleUtil.amountConversion(value.toDouble())
-//        }
 
         vol_chart.data = combinedData
 
-        vol_chart.setVisibleXRange(MAX_COUNT.toFloat(), MIN_COUNT.toFloat())
 
         vol_chart.notifyDataSetChanged()
         moveToLast(vol_chart)
@@ -788,6 +824,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     }
 
 
+    private var lastIndex = 0
     override fun onAxisChange(chart: BarLineChartBase<*>) {
         val lowestVisibleX = chart.lowestVisibleX
         if (lowestVisibleX <= chart.xAxis.axisMinimum) return
@@ -796,6 +833,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         val hisData = mData[if (x < 0) 0 else x]
         setChartDescription(hisData)
         k_info_mark.closeHightLight()
+        Logger.i("$INIT_COUNT == " + maxX)
+        lastIndex = x
     }
 
     fun setOnLoadMoreListener(l: OnLoadMoreListener) {

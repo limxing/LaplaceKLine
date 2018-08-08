@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.LinearLayout
 
 import com.github.mikephil.charting.charts.Chart
@@ -19,6 +20,7 @@ import cn.laplacetech.klinelib.model.HisData
 import cn.laplacetech.klinelib.util.DateUtils
 import cn.laplacetech.klinelib.util.DoubleUtil
 import cn.laplacetech.klinelib.util.getColor
+import com.orhanobut.logger.Logger
 
 import java.util.ArrayList
 
@@ -29,7 +31,7 @@ import java.util.ArrayList
 
 open class BaseView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
-     var mDateFormat = "yyyy-MM-dd HH:mm"
+    var mDateFormat = "yyyy-MM-dd HH:mm"
 
     protected var mDecreasingColor: Int = 0
     protected var mIncreasingColor: Int = 0
@@ -37,8 +39,8 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
     protected var mTransparentColor: Int = 0
 
 
-    var MAX_COUNT = 300
-    var MIN_COUNT = 10
+    var MAX_COUNT = 150
+    var MIN_COUNT = 20
     var INIT_COUNT = 80
 
     protected var mData: ArrayList<HisData> = ArrayList<HisData>(300)
@@ -123,9 +125,16 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
 
+    private val TAG: String = "BaseKLineView"
+
     protected fun moveToLast(chart: CustomCombinedChart) {
+        val maxX = chart.highestVisibleX.toInt()
+
         if (mData.size > INIT_COUNT) {
             chart.moveViewToX((mData.size - INIT_COUNT).toFloat())
+//            chart.moveViewToAnimated((mData.size - INIT_COUNT).toFloat(),0f, YAxis.AxisDependency.RIGHT,300)
+        }else{
+            chart.moveViewToX(0f)
         }
     }
 
