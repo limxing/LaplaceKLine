@@ -67,7 +67,7 @@ class InfoViewListener : OnChartValueSelectedListener {
             mInfoView?.setData(mLastClose, mList!![x])
             mMarkView?.visibility = View.VISIBLE
 
-            mMarkView?.update(mList!![x], h, "")
+            mMarkView?.update(mList!![x], h, x)
             mKlineView?.updateValueSelected(mList!![x])
         }
         val lp = mInfoView?.layoutParams as? FrameLayout.LayoutParams

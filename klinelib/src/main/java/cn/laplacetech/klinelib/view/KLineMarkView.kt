@@ -15,7 +15,6 @@ import cn.laplacetech.klinelib.util.DateUtils
 import cn.laplacetech.klinelib.util.DoubleUtil
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.highlight.Highlight
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -75,40 +74,40 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 //        }
     }
 
+    private var xPx: Int = 0
+    private var yPx: Int = 0
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (info.size == 0) return
 
-
-        highlight?.yPx?.toInt()?.let {
+        if (xPx != -1 && yPx != -1) {
             val value = info[3].text
             paint.getTextBounds(value, 0, value.length, textR)
 
             hightValueRect.left = 0
             hightValueRect.right = textR.width() + 6 * density
-            hightValueRect.top = it - 8 * density
-            hightValueRect.bottom = it + 8 * density
+            hightValueRect.top = yPx - 8 * density
+            hightValueRect.bottom = yPx + 8 * density
             paint.style = Paint.Style.FILL
             paint.color = resources.getColor(R.color.ma5)
             canvas.drawRect(hightValueRect, paint)
 
             paint.color = Color.WHITE
-            val timeXX = hightValueRect.left + (hightValueRect.width() - textR.width()) / 2f
-            val timeYY = hightValueRect.top + (hightValueRect.height() + textR.height()) / 2f
+            var timeXX = hightValueRect.left + (hightValueRect.width() - textR.width()) / 2f
+            var timeYY = hightValueRect.top + (hightValueRect.height() + textR.height()) / 2f
 
             canvas.drawText(value, timeXX, timeYY, paint)
-        }
 
-        highlight?.xPx?.toInt()?.let {
             paint.getTextBounds(time, 0, time.length, textR)
             paint.color = resources.getColor(R.color.ma5)
             paint.style = Paint.Style.FILL
             val timeY = measuredHeight - 90 * density
             val textW2 = textR.width() / 2 + 3 * density
 
-            hightTimeRect.left = it - textW2
+            hightTimeRect.left = xPx - textW2
             hightTimeRect.top = timeY - 8 * density
-            hightTimeRect.right = it + textW2
+            hightTimeRect.right = xPx + textW2
             hightTimeRect.bottom = timeY + 8 * density
 
             if (hightTimeRect.left < 0) {
@@ -121,15 +120,13 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
             }
             canvas.drawRect(hightTimeRect, paint)
             paint.color = Color.WHITE
-            val timeXX = hightTimeRect.left + (hightTimeRect.width() - textR.width()) / 2f
-            val timeYY = hightTimeRect.top + (hightTimeRect.height() + textR.height()) / 2f
+            timeXX = hightTimeRect.left + (hightTimeRect.width() - textR.width()) / 2f
+            timeYY = hightTimeRect.top + (hightTimeRect.height() + textR.height()) / 2f
 
             canvas.drawText(time, timeXX, timeYY, paint)
+
+
         }
-
-
-
-
 
 
 
@@ -243,12 +240,12 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
 //    private var timeX: Int = 0
 
-    private var highlight: Highlight? = null
+//    private var highlight: Highlight? = null
 
     /**
      *
      */
-    fun update(info: HisData?, h: Highlight, mDateFormat: String) {
+    fun update(info: HisData?, h: Highlight, listIndex: Int) {
         if (this.info.size == 0 && info == null) return
         this.info.clear()
 
@@ -263,7 +260,8 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         this.info.add(TextBean(DoubleUtil.amountConversion(info?.change_ratio ?: 0.0), getColorByRatio(info?.change_ratio ?: 0.0)))
         this.time = DateUtils.formatDate(info?.date ?: 0, dataFormatString)
 
-        highlight = h
+        xPx = h.xPx.toInt()
+        yPx = h.yPx.toInt()
         Log.i("highlight", "" + h.xPx + "==" + h.yPx)
 
 
@@ -310,8 +308,16 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     fun closeHightLight() {
-        if (this.highlight == null) return
-        this.highlight = null
+        if (this.xPx == -1) return
+        this.xPx = -1
+        invalidate()
+    }
+
+    private var lastDx: Int = 0
+
+    fun translate(dX: Float, dY: Float) {
+        if (this.info.size == 0 ) return
+        this.xPx = xPx + (dX.toInt() - lastDx)
         invalidate()
     }
 }

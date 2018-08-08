@@ -9,6 +9,8 @@ import com.github.mikephil.charting.charts.BarLineChartBase
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
+import com.orhanobut.logger.Logger
+
 
 /**
  * http://stackoverflow.com/questions/28521004/mpandroidchart-have-one-graph-mirror-the-zoom-swipes-on-a-sister-graph
@@ -52,6 +54,7 @@ class CoupleChartGestureListener(private val srcChart: BarLineChartBase<*>, vara
     }
 
     override fun onChartFling(me1: MotionEvent, me2: MotionEvent, velocityX: Float, velocityY: Float) {
+
         listener?.onAxisChange(srcChart)
         performLoadMore()
         syncCharts()
@@ -69,6 +72,7 @@ class CoupleChartGestureListener(private val srcChart: BarLineChartBase<*>, vara
         Log.d(TAG, srcChart.lowestVisibleX.toString() + "")
         //        Log.d(TAG, "getHighestVisibleX  " +srcChart.getHighestVisibleX());
         listener?.onAxisChange(srcChart)
+        listener?.onAxisTranslate(me.x,dY)
         performLoadMore()
         syncCharts()
     }
@@ -116,7 +120,9 @@ class CoupleChartGestureListener(private val srcChart: BarLineChartBase<*>, vara
     }
 
     interface OnAxisChangeListener {
+
         fun onAxisChange(chart: BarLineChartBase<*>)
+        fun onAxisTranslate(dX: Float, dY: Float)
     }
 
     companion object {

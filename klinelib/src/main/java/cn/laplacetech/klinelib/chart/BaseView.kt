@@ -38,10 +38,12 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
     protected var mAxisColor: Int = 0
     protected var mTransparentColor: Int = 0
 
+    val MAX_COUNT_FLAG = 150
 
-    var MAX_COUNT = 150
-    var MIN_COUNT = 20
-    var INIT_COUNT = 80
+    var MAX_COUNT = MAX_COUNT_FLAG
+
+    var MIN_COUNT = 25
+    var INIT_COUNT = 50
 
     protected var mData: ArrayList<HisData> = ArrayList<HisData>(300)
 
@@ -133,7 +135,7 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
         if (mData.size > INIT_COUNT) {
             chart.moveViewToX((mData.size - INIT_COUNT).toFloat())
 //            chart.moveViewToAnimated((mData.size - INIT_COUNT).toFloat(),0f, YAxis.AxisDependency.RIGHT,300)
-        }else{
+        } else {
             chart.moveViewToX(0f)
         }
     }
