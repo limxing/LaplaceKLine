@@ -61,9 +61,21 @@ object DoubleUtil {
     /**
      * 将数字转换成以万为单位或者以亿为单位，因为在前端数字太大显示有问题
      */
-    fun amountConversion(amount: Double): String {
+    fun amountConversion(amount: Double, keepTwoDigits: Boolean): String {
+
+        if (amount < 0.001 && !keepTwoDigits) {
+            return "$amount"
+        }
+        if (amount < 1 && !keepTwoDigits) {
+            return formatDecimal(amount)
+        }
+        val lengthInt = "${amount.toInt()}".length
+        if (lengthInt < 8 && !keepTwoDigits) {
+            return getStringByDigits(amount, 8 - lengthInt)
+        }
         return formatNumberInfo(amount).toString()
     }
+
     /**
      * 将数字转换成以万为单位或者以亿为单位，因为在前端数字太大显示有问题
      *
@@ -106,7 +118,7 @@ object DoubleUtil {
             //            }else{
             //                value = formatNumber(tempValue,2,true);
             //            }
-            value = formatNumber(tempValue, 2,true)
+            value = formatNumber(tempValue, 2, true)
 
             info.number = zeroFill(value)
             info.unit = MILLION_UNIT
@@ -121,7 +133,7 @@ object DoubleUtil {
             //                value = formatNumber(tempValue,2,true);
             //            }
 
-            value = formatNumber(tempValue, 2,true)
+            value = formatNumber(tempValue, 2, true)
             //如果值刚好是10000万，则要变成1亿
             if (value == MILLION) {
                 info.number = zeroFill(value / MILLION)
@@ -141,11 +153,11 @@ object DoubleUtil {
             //                value = formatNumber(tempValue,2,true);
             //            }
 
-            value = formatNumber(tempValue, 2,true)
+            value = formatNumber(tempValue, 2, true)
             info.number = zeroFill(value)
             info.unit = BILLION_UNIT
         } else {
-            value = formatNumber(amount, 2,true)
+            value = formatNumber(amount, 2, true)
             info.number = zeroFill(value)
             info.unit = ""
         }//金额大于1亿
@@ -177,8 +189,8 @@ object DoubleUtil {
      */
     fun formatNumber(number: Double, decimal: Int, rounding: Boolean): Double {
 
-        if (number.isNaN()){
-            return BigDecimal(0).setScale(decimal,RoundingMode.HALF_UP).toDouble()
+        if (number.isNaN()) {
+            return BigDecimal(0).setScale(decimal, RoundingMode.HALF_UP).toDouble()
         }
         val bigDecimal = BigDecimal(number)
         return if (rounding) {

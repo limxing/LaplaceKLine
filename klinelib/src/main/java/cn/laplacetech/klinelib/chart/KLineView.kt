@@ -1,6 +1,7 @@
 package cn.laplacetech.klinelib.chart
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Paint
 import android.support.v4.content.ContextCompat
@@ -168,7 +169,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         axisLeftPrice.setDrawAxisLine(false)//Y 轴轴线
         axisLeftPrice.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
         axisLeftPrice.textColor = mAxisColor
-        axisLeftPrice.valueFormatter = IAxisValueFormatter { value, axis -> DoubleUtil.getStringByDigits(value.toDouble(), mDigits) }
+        axisLeftPrice.valueFormatter = IAxisValueFormatter { value, axis ->
+            DoubleUtil.amountConversion(value.toDouble(),true)
+        }
         axisLeftPrice.yOffset = -5f// Y轴的标签是否偏移，默认在线上
 
         val colorArray = intArrayOf(mDecreasingColor, mDecreasingColor, mAxisColor, mIncreasingColor, mIncreasingColor)
@@ -194,7 +197,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         axisRightPrice.valueFormatter = IAxisValueFormatter { value, axis ->
             val rate = (value - mLastClose) / mLastClose * 100
             if (java.lang.Double.isNaN(rate) || java.lang.Double.isInfinite(rate)) {
-                return@IAxisValueFormatter ""
+                return@IAxisValueFormatter "0.00%"
             }
             val s = String.format(Locale.getDefault(), "%.2f%%",
                     rate)
@@ -270,7 +273,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
 
         val hisData = lastData
-        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData?.vol ?: 0.0))
+        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData?.vol ?: 0.0,false))
         setMADescriptions(hisData?.ma5, hisData?.ma10, hisData?.ma20)
         kLineViewListener?.onMaChanged(hisData)
         if (price_chart.description.isEnabled) {
@@ -293,9 +296,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
      */
     private fun setMADescriptions(ma5: Double?, ma10: Double?, ma20: Double?) {
 
-        tv_ma5.text = "MA5: ${DoubleUtil.amountConversion(ma5 ?: 0.0)}"
-        tv_ma10.text = "MA10: ${DoubleUtil.amountConversion(ma10 ?: 0.0)}"
-        tv_ma20.text = "MA20: ${DoubleUtil.amountConversion(ma20 ?: 0.0)}"
+        tv_ma5.text = "MA5: ${DoubleUtil.amountConversion(ma5 ?: 0.0,false)}"
+        tv_ma10.text = "MA10: ${DoubleUtil.amountConversion(ma10 ?: 0.0,false)}"
+        tv_ma20.text = "MA20: ${DoubleUtil.amountConversion(ma20 ?: 0.0,false)}"
     }
 
     private fun initChartPriceData(): CombinedData {
@@ -808,7 +811,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         if (price_chart.description.isEnabled)
             setDescription(price_chart, String.format(Locale.getDefault(), "MA5:%.2f  MA10:%.2f  MA20:%.2f  MA30:%.2f",
                     hisData.ma5, hisData.ma10, hisData.ma20, hisData.ma30))
-        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol ?: 0.0))
+        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol ?: 0.0,false))
         setMADescriptions(hisData.ma5, hisData.ma10, hisData.ma20)
         if (macd_chart.description.isEnabled)
             setDescription(macd_chart, String.format(Locale.getDefault(), "MACD:%.2f  DEA:%.2f  DIF:%.2f",
@@ -914,8 +917,14 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     }
 
     fun updateValueSelected(hisData: HisData) {
-        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol ?: 0.0))
+        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol ?: 0.0,false))
         kLineViewListener?.onMaChanged(hisData)
         setMADescriptions(hisData.ma5, hisData.ma10, hisData.ma20)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        price_chart.moveViewToX(mData.size - 1f)
+        vol_chart.moveViewToX(mData.size - 1f)
     }
 }

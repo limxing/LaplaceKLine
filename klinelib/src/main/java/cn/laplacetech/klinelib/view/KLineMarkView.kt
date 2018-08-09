@@ -162,7 +162,7 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         paint.getTextBounds(timeTitle, 0, timeTitle.length, textR)
 
         var x = bacRect.left + (bacRect.width() - textR.width()) / 2f
-        var y = bacRect.top + 10f * density
+        var y = bacRect.top + 15f * density
 
 
 
@@ -230,7 +230,7 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
                 this.info.add(when (i) {
                     4 -> TextBean(getValue(info[i]), getColorByRatio(info[i]))
                     5 -> TextBean("${getValue(info[i])}%", getColorByRatio(info[i]))
-                    else -> TextBean(DoubleUtil.amountConversion(info[i]), resources.getColor(R.color.kline_mark_text))
+                    else -> TextBean(DoubleUtil.amountConversion(info[i],false), resources.getColor(R.color.kline_mark_text))
                 })
 
             }
@@ -260,8 +260,8 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         this.info.add(TextBean((info?.high ?: 0.00).toString(), normalColor))
         this.info.add(TextBean((info?.low ?: 0.00).toString(), normalColor))
         this.info.add(TextBean((info?.close ?: 0.00).toString(), normalColor))
-        this.info.add(TextBean(DoubleUtil.amountConversion(info?.change ?: 0.0), getColorByRatio(info?.change ?: 0.0)))
-        this.info.add(TextBean(DoubleUtil.amountConversion(info?.change_ratio ?: 0.0), getColorByRatio(info?.change_ratio ?: 0.0)))
+        this.info.add(TextBean(DoubleUtil.amountConversion(info?.change ?: 0.0,true), getColorByRatio(info?.change ?: 0.0)))
+        this.info.add(TextBean("${DoubleUtil.amountConversion(info?.change_ratio ?: 0.0,true)}%", getColorByRatio(info?.change_ratio ?: 0.0)))
         this.time = DateUtils.formatDate(info?.date ?: 0, dataFormatString)
         this.timeTitle = DateUtils.formatDate(info?.date ?: 0, "yyyy-MM-dd HH:mm")
 
@@ -283,17 +283,17 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
     private fun getColorByRatio(num: Double): Int {
         return when {
             num > 0 -> {
-                if (isRedDown){
+                if (isRedDown) {
                     resources.getColor(mDropColor)
-                }else {
+                } else {
                     resources.getColor(mRiseColor)
                 }
 
             }
             num < 0 -> {
-                if (isRedDown){
+                if (isRedDown) {
                     resources.getColor(mRiseColor)
-                }else {
+                } else {
                     resources.getColor(mDropColor)
                 }
             }
@@ -303,7 +303,7 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun getValue(value: Double): String {
 
-        var text = DoubleUtil.amountConversion(value)
+        var text = DoubleUtil.amountConversion(value,false)
 //        var text = NumberUtils.amountConversion(value)
         if (value > 0) {
             text = "+$text"
