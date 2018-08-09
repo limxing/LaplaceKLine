@@ -519,6 +519,7 @@ public class ViewPortHandler {
         if (maxScaleX == 0.f)
             maxScaleX = Float.MAX_VALUE;
 
+
         mMinScaleX = minScaleX;
         mMaxScaleX = maxScaleX;
 
