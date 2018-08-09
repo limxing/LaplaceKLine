@@ -20,7 +20,7 @@
             android:background="#fff"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            app:layout_scrollFlags="scroll" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -33,6 +33,7 @@ import cn.laplacetech.klinelib.util.DataUtils
 import cn.laplacetech.klinelib.util.DateUtils
 import cn.laplacetech.klinelib.util.DisplayUtils
 import cn.laplacetech.klinelib.util.DoubleUtil
+import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.view_kline.view.*
 
@@ -78,7 +79,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         setOffset()
         initChartListener()
         showVolume()
-//        Logger.addLogAdapter(AndroidLogAdapter())
+        Logger.addLogAdapter(AndroidLogAdapter())
         price_chart.isLogEnabled = false
         vol_chart.isLogEnabled = false
         if (mData.size == 0)
@@ -251,12 +252,12 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
 //        macd_chart.xAxis.axisMaximum = macd_chart.data.xMax + 0.5f
 //        kdj_chart.xAxis.axisMaximum = kdj_chart.data.xMax + 0.5f
-
+        price_chart.moveViewToX(mData.size - 1f)
 
         //设置当前缩放程度
         for (i in 0..2) {
             initScale()
-            //            macd_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
+            //      macd_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
 //            kdj_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
 
         }
@@ -361,7 +362,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
         price_chart.notifyDataSetChanged()
         price_chart.xAxis.axisMaximum = price_chart.data.xMax + 0.5f
-        price_chart.moveViewToX(mData.size - 1f)
+
 //        moveToLast(price_chart)
         return combinedData
     }
@@ -516,7 +517,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         vol_chart.data = combinedData
         vol_chart.notifyDataSetChanged()
         vol_chart.xAxis.axisMaximum = vol_chart.data.xMax + 0.5f
-        vol_chart.moveViewToX(mData.size - 1f)
+//        vol_chart.moveViewToX(mData.size - 1f)
         return combinedData
     }
 
@@ -940,6 +941,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        initScale()
+//        moveToLast(price_chart)
+//        price_chart.moveViewToX(mData.size - 1f)
+//        initScale()
     }
 }
