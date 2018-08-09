@@ -16,36 +16,36 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-       //设置时间轴 时间的format
+        //设置时间轴 时间的format
 
-
+        klineview.setIsRedDown(true)
         one_minute.setOnClickListener {
             klineview.setDateFormat("HH:mm")
-            klineview.initData(get1Day(this,R.raw.one_minute))
+            klineview.initData(get1Day(this, R.raw.one_minute))
         }
         five_minutes.setOnClickListener {
             klineview.setDateFormat("HH:mm")
-            klineview.initData(get1Day(this,R.raw.five_minutes))
+            klineview.initData(get1Day(this, R.raw.five_minutes))
         }
         fifteen_minutes.setOnClickListener {
             klineview.setDateFormat("HH:mm")
-            klineview.initData(get1Day(this,R.raw.fifteen_minutes))
+            klineview.initData(get1Day(this, R.raw.fifteen_minutes))
         }
         one_hour.setOnClickListener {
             klineview.setDateFormat("MM-dd HH:mm")
-            klineview.initData(get1Day(this,R.raw.one_hour))
+            klineview.initData(get1Day(this, R.raw.one_hour))
         }
         four_hours.setOnClickListener {
             klineview.setDateFormat("MM-dd HH:mm")
-            klineview.initData(get1Day(this,R.raw.four_hours))
+            klineview.initData(get1Day(this, R.raw.four_hours))
         }
         twelve_hours.setOnClickListener {
             klineview.setDateFormat("MM-dd HH:mm")
-            klineview.initData(get1Day(this,R.raw.twelve_hours))
+            klineview.initData(get1Day(this, R.raw.twelve_hours))
         }
         one_day.setOnClickListener {
             klineview.setDateFormat("yyyy-MM-dd")
-            klineview.initData(get1Day(this,R.raw.oneday))
+            klineview.initData(get1Day(this, R.raw.oneday))
         }
     }
 
