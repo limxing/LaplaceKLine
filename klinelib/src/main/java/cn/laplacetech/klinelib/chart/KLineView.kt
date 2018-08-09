@@ -186,7 +186,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         //右边的Y轴
         val axisRightPrice = price_chart.axisRight
         axisRightPrice.setLabelCount(5, true)
-        axisRightPrice.setDrawLabels(true)
+        axisRightPrice.setDrawLabels(false)
 
         axisRightPrice.setDrawGridLines(false)
         axisRightPrice.setDrawAxisLine(false)
