@@ -255,17 +255,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
         //设置当前缩放程度
         for (i in 0..2) {
-            price_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())//设置可放大的最大程度
-            vol_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())
-
-            val currentScale = MAX_COUNT * 1f / INIT_COUNT
-            val lastScale = price_chart.viewPortHandler.scaleX
-            Logger.i("$lastScale  $currentScale")
-
-            val toScale = currentScale / lastScale
-
-            price_chart.zoom(toScale, 0f, 0f, 0f)
-            vol_chart.zoom(toScale, 0f, 0f, 0f)
+            initScale()
             //            macd_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
 //            kdj_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
 
@@ -292,6 +282,24 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     }
 
     /**
+     * 重新设置缩放
+     */
+    private fun initScale() {
+
+        price_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())//设置可放大的最大程度
+        vol_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())
+
+        val currentScale = MAX_COUNT * 1f / INIT_COUNT
+        val lastScale = price_chart.viewPortHandler.scaleX
+        Logger.i("$lastScale  $currentScale")
+
+        val toScale = currentScale / lastScale
+
+        price_chart.zoom(toScale, 0f, 0f, 0f)
+        vol_chart.zoom(toScale, 0f, 0f, 0f)
+    }
+
+    /**
      * 设置均线描述文字
      */
     private fun setMADescriptions(ma5: Double?, ma10: Double?, ma20: Double?) {
@@ -312,7 +320,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         for (i in mData.indices) {
             val hisData = mData[i]
             lineCJEntries.add(CandleEntry(i.toFloat(), hisData.high?.toFloat() ?: 0f,
-                    hisData.low?.toFloat() ?: 0f, hisData.open?.toFloat() ?: 0f, hisData.close?.toFloat() ?: 0f))
+                    hisData.low?.toFloat() ?: 0f, hisData.open?.toFloat()
+                    ?: 0f, hisData.close?.toFloat() ?: 0f))
 
             if (hisData.ma5?.isNaN() == false) {
                 ma5Entries.add(Entry(i.toFloat(), hisData.ma5?.toFloat() ?: 0f))
@@ -332,7 +341,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         }
 
         if (!mData.isEmpty() && mData.size < MAX_COUNT) {
-            (mData.size until MAX_COUNT).mapTo(paddingEntries) { Entry(it.toFloat(), mData[mData.size - 1].close?.toFloat() ?: 0f) }
+            (mData.size until MAX_COUNT).mapTo(paddingEntries) {
+                Entry(it.toFloat(), mData[mData.size - 1].close?.toFloat() ?: 0f)
+            }
         }
 
         val lineData = LineData(
@@ -553,7 +564,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
             jEntries.add(Entry(i.toFloat(), mData[i].j?.toFloat() ?: 0f))
         }
         if (!mData.isEmpty() && mData.size < MAX_COUNT) {
-            (mData.size until MAX_COUNT).mapTo(paddingEntries) { Entry(it.toFloat(), mData[mData.size - 1].k?.toFloat() ?: 0f) }
+            (mData.size until MAX_COUNT).mapTo(paddingEntries) {
+                Entry(it.toFloat(), mData[mData.size - 1].k?.toFloat() ?: 0f)
+            }
         }
         val sets = ArrayList<ILineDataSet>()
         sets.add(setLine(K, kEntries))
@@ -598,7 +611,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
                 hisData.high = Math.max(hisData.high ?: 0.0, price)
                 hisData.low = Math.min(hisData.low ?: 0.0, price)
                 set.addEntry(CandleEntry(set.entryCount.toFloat(), hisData.high?.toFloat() ?: 0f,
-                        hisData.low?.toFloat() ?: 0f, hisData.open?.toFloat() ?: 0f, price.toFloat()))
+                        hisData.low?.toFloat() ?: 0f, hisData.open?.toFloat()
+                        ?: 0f, price.toFloat()))
 
             }
         }
@@ -658,7 +672,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         klineSet.addEntry(CandleEntry(klineCount.toFloat(), hisData.high?.toFloat() ?: 0f,
                 hisData.low?.toFloat() ?: 0f, hisData.open?.toFloat() ?: 0f,
                 hisData.close?.toFloat() ?: 0f))
-        volSet.addEntry(BarEntry(volSet.entryCount.toFloat(), hisData.vol?.toFloat() ?: 0f, hisData))
+        volSet.addEntry(BarEntry(volSet.entryCount.toFloat(), hisData.vol?.toFloat()
+                ?: 0f, hisData))
 
         macdSet.addEntry(BarEntry(macdSet.entryCount.toFloat(), hisData.macd?.toFloat() ?: 0f))
         difSet.addEntry(Entry(difSet.entryCount.toFloat(), hisData.dif?.toFloat() ?: 0f))
@@ -826,7 +841,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
      * align two chart
      */
     private fun setOffset() {
-        val chartHeight = resources.getDimensionPixelSize(R.dimen.bottom_chart_height)
+        val chartHeight = resources.getDimensionPixelSize(R.dimen.bottom_chart_height) +
+                DisplayUtils.dip2px(mContext, 20f)
         price_chart.setViewPortOffsets(0f, 0f, 0f, chartHeight.toFloat())
         val bottom = DisplayUtils.dip2px(mContext, 5f)
         vol_chart.setViewPortOffsets(0f, 0f, 0f, bottom.toFloat())
@@ -924,7 +940,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        price_chart.moveViewToX(mData.size - 1f)
-        vol_chart.moveViewToX(mData.size - 1f)
+        initScale()
     }
 }
