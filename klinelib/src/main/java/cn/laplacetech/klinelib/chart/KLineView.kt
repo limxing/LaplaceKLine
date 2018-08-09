@@ -80,19 +80,20 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 //        Logger.addLogAdapter(AndroidLogAdapter())
         price_chart.isLogEnabled = false
         vol_chart.isLogEnabled = false
-        postDelayed({
-            val time = System.currentTimeMillis()
-            val list = ArrayList<HisData>()
-            val day = 60 * 60 * 24 * 1000
-            for (i in 0..1000) {
-                val hisData = HisData()
-                hisData.date = time - day * i
-                list.add(hisData)
-            }
-            list.reverse()
-            initData(list)
+        if (mData.size == 0)
+            postDelayed({
+                val time = System.currentTimeMillis()
+                val list = ArrayList<HisData>()
+                val day = 60 * 60 * 24 * 1000
+                for (i in 0..MAX_COUNT_FLAG * 2) {
+                    val hisData = HisData()
+                    hisData.date = time - day * i
+                    list.add(hisData)
+                }
+                list.reverse()
+                initData(list)
 
-        }, 100)
+            }, 100)
     }
 
     fun showKdj() {
@@ -913,7 +914,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     }
 
     fun updateValueSelected(hisData: HisData) {
-        setDescription(vol_chart, "VOL " + hisData.vol?.let { DoubleUtil.amountConversion(it) })
+        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol ?: 0.0))
         kLineViewListener?.onMaChanged(hisData)
         setMADescriptions(hisData.ma5, hisData.ma10, hisData.ma20)
     }
