@@ -1,8 +1,11 @@
 package cn.laplacetech.android.laplacekline
 
 import android.content.Context
+import android.content.res.Configuration
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CoordinatorLayout
 import cn.laplacetech.klinelib.model.HisData
 import com.alibaba.fastjson.JSON
 import kotlinx.android.synthetic.main.activity_main.*
@@ -10,6 +13,8 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.StringWriter
 import java.util.ArrayList
+import android.view.WindowManager
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -80,6 +85,32 @@ class MainActivity : AppCompatActivity() {
 //
 //            hisData.add(data)
 //        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            (appbar.getChildAt(0).layoutParams as AppBarLayout.LayoutParams).scrollFlags = 0
+            appbar.layoutParams.height = CoordinatorLayout.LayoutParams.MATCH_PARENT
+            val lp = window.attributes
+//直接对它flags变量操作   LayoutParams.FLAG_FULLSCREEN 表示设置全屏
+            lp.flags = lp.flags or WindowManager.LayoutParams.FLAG_FULLSCREEN
+//设置属性
+            window.attributes = lp
+//意思大致就是  允许窗口扩展到屏幕之外
+            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        } else {
+            (appbar.getChildAt(0).layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+            appbar.layoutParams.height = CoordinatorLayout.LayoutParams.WRAP_CONTENT
+            val lp2 = window.attributes
+//LayoutParams.FLAG_FULLSCREEN 强制屏幕状态条栏弹出
+            lp2.flags = lp2.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN.inv()
+//设置属性
+            window.attributes = lp2
+//不允许窗口扩展到屏幕之外  clear掉了
+            window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        }
+
     }
 
 }

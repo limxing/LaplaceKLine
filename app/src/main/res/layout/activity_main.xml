@@ -3,37 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
     android:scrollIndicators="none"
     tools:context="cn.laplacetech.android.laplacekline.MainActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:background="#fff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="1dp">
 
-        <cn.laplacetech.klinelib.chart.KLineView
-            android:id="@+id/klineview"
-            android:layout_width="match_parent"
-            android:layout_height="260dp"
-            android:background="#fff"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            app:layout_scrollFlags="scroll" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_scrollFlags="scroll">
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabs"
+            <cn.laplacetech.klinelib.chart.KLineView
+                android:id="@+id/klineview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#fff" />
+                android:layout_height="260dp"
+                android:background="#fff"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp" />
+
         </LinearLayout>
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff" />
 
     </android.support.design.widget.AppBarLayout>
 
