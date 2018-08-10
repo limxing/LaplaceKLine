@@ -58,8 +58,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     private val mDigits = 2
     private var mCoupleChartGestureListener: CoupleChartGestureListener? = null
 
-    private var vibrator: Vibrator?
-
     private var showLimitline: Boolean
 
     init {
@@ -94,7 +92,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
                 initData(list)
 
             }, 100)
-        vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     }
 
