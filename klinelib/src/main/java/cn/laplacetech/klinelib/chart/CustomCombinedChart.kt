@@ -30,6 +30,7 @@ class CustomCombinedChart @JvmOverloads constructor(context: Context, attrs: Att
     override fun init() {
         super.init()
         mRenderer = CustomCombinedChartRenderer(this, mAnimator, mViewPortHandler)
+        isLogEnabled = false
     }
 
     fun setYMarker(marker: IMarker) {

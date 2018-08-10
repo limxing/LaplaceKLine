@@ -25,8 +25,6 @@ import cn.laplacetech.klinelib.util.DateUtils
 import cn.laplacetech.klinelib.util.DisplayUtils
 import cn.laplacetech.klinelib.util.DoubleUtil
 import com.github.mikephil.charting.data.*
-import com.orhanobut.logger.AndroidLogAdapter
-import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.view_kline.view.*
 
 import java.util.ArrayList
@@ -73,7 +71,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         setOffset()
         initChartListener()
         showVolume()
-        Logger.addLogAdapter(AndroidLogAdapter())
+
         price_chart.isLogEnabled = false
         vol_chart.isLogEnabled = false
         if (mData.size == 0)
@@ -244,9 +242,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         setCount(INIT_COUNT, mData.size, MIN_COUNT)//最大就是集合的大小，初始化当前
 //        }
         price_chart.realCount = mData.size
-
-        Logger.i("数组的大小：${mData.size}")
-
 
         initChartPriceData()
         initChartVolumeData()

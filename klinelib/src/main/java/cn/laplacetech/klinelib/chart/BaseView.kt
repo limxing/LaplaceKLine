@@ -20,7 +20,6 @@ import cn.laplacetech.klinelib.model.HisData
 import cn.laplacetech.klinelib.util.DateUtils
 import cn.laplacetech.klinelib.util.DoubleUtil
 import cn.laplacetech.klinelib.util.getColor
-import com.orhanobut.logger.Logger
 
 import java.util.ArrayList
 
