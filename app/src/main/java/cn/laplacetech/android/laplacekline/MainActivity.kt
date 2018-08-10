@@ -70,15 +70,16 @@ class MainActivity : AppCompatActivity() {
 
         val list = JSON.parseArray(json, Array<Double>::class.java)
 
-        val hisData = ArrayList<HisData>()
-        for (i in list.indices) {
-            val m = list[i]
-            val data = HisData(m)
-
-
-            hisData.add(data)
-        }
-        return hisData
+        return list.indices
+                .map { list[it] }
+                .map { HisData(it) }
+//        for (i in list.indices) {
+//            val m = list[i]
+//            val data = HisData(m)
+//
+//
+//            hisData.add(data)
+//        }
     }
 
 }

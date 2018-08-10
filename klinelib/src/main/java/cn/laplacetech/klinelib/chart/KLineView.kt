@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Vibrator
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -58,6 +59,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     private val mDigits = 2
     private var mCoupleChartGestureListener: CoupleChartGestureListener? = null
 
+    private var vibrator: Vibrator?
+
     init {
         LayoutInflater.from(mContext).inflate(R.layout.view_kline, this)
         k_info_mark.setChart(price_chart, vol_chart, macd_chart, kdj_chart)
@@ -87,7 +90,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
                 initData(list)
 
             }, 100)
-
+        vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 
     fun showKdj() {
@@ -129,7 +132,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         mvx.setOffset(0f, -resources.getDimension(R.dimen.bottom_chart_height) - 2 * resources.displayMetrics.density)
         price_chart.setXMarker(mvx)
 
-        val mvy = LineChartYMarkerView(mContext,mData)
+        val mvy = LineChartYMarkerView(mContext, mData)
         mvy.chartView = price_chart
         price_chart.setYMarker(mvy)
 
@@ -953,10 +956,19 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         fun onMaChanged(hisData: HisData?)
     }
 
+    private var lastHisData: HisData? = null
+
     fun updateValueSelected(hisData: HisData) {
-        setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol ?: 0.0, false))
-        kLineViewListener?.onMaChanged(hisData)
-        setMADescriptions(hisData.ma5, hisData.ma10, hisData.ma20)
+
+
+        if (lastData != hisData) {
+            setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol ?: 0.0, false))
+            kLineViewListener?.onMaChanged(hisData)
+            setMADescriptions(hisData.ma5, hisData.ma10, hisData.ma20)
+            lastHisData = hisData
+        }
+
+
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
