@@ -23,12 +23,17 @@ import com.github.mikephil.charting.utils.MPPointF
 class CustomCombinedChart @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : CombinedChart(context, attrs, defStyle) {
 
     private var mXMarker: IMarker? = null
+    private var mYMarker: IMarker? = null
 
     private var mYCenter: Float = 0.toFloat()
 
     override fun init() {
         super.init()
         mRenderer = CustomCombinedChartRenderer(this, mAnimator, mViewPortHandler)
+    }
+
+    fun setYMarker(marker: IMarker) {
+        mYMarker = marker
     }
 
     fun setXMarker(marker: IMarker) {
@@ -47,7 +52,8 @@ class CustomCombinedChart @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     override fun drawMarkers(canvas: Canvas) {
-        if (mMarker == null || mXMarker == null || !isDrawMarkersEnabled || !valuesToHighlight())
+        super.drawMarkers(canvas)
+        if (mXMarker == null || !isDrawMarkersEnabled || !valuesToHighlight())
             return
 
         for (i in mIndicesToHighlight.indices) {
@@ -57,11 +63,12 @@ class CustomCombinedChart @JvmOverloads constructor(context: Context, attrs: Att
             val set = mData.getDataSetByIndex(highlight.dataSetIndex)
 
             val e = mData.getEntryForHighlight(mIndicesToHighlight[i])
-//            有疑问，修改前是：set.getEntryIndex(e)
-            val entryIndex = set.getEntryIndex(e.x, e.y, DataSet.Rounding.CLOSEST)
+//            有疑问，修改前是：
+//            val entryIndex = set.getEntryIndex(e)
+//            val entryIndex = set.getEntryIndex(e.x, e.y, DataSet.Rounding.CLOSEST)
 
             // make sure entry not null
-            if (e == null || entryIndex > set.entryCount * mAnimator.phaseX)
+            if (e == null || set.getEntryIndex(e.x, e.y, DataSet.Rounding.CLOSEST) > set.entryCount * mAnimator.phaseX)
                 continue
 
             val pos = getMarkerPosition(highlight)
@@ -71,17 +78,21 @@ class CustomCombinedChart @JvmOverloads constructor(context: Context, attrs: Att
                 continue
 
             // callbacks to update the content
-            mMarker.refreshContent(e, highlight)
-            mXMarker!!.refreshContent(e, highlight)
+//            mMarker.refreshContent(e, highlight)
+
+            mXMarker?.refreshContent(e, highlight)
+            mYMarker?.refreshContent(e, highlight)
 
             // draw the marker
             //            if (mMarker instanceof LineChartYMarkerView) {
-            val yMarker = mMarker as LineChartYMarkerView
+//            val yMarker = mMarker as LineChartYMarkerView
             val xMarker = mXMarker as LineChartXMarkerView?
-            val width = yMarker.measuredWidth
-            mMarker.draw(canvas, measuredWidth - width * 1.05f, pos[1] - yMarker.measuredHeight / 2)
+            val yMarker = mYMarker as LineChartYMarkerView?
+//            val width = yMarker.measuredWidth
+//            mMarker.draw(canvas, measuredWidth - width * 1.05f, pos[1] - yMarker.measuredHeight / 2)
 
-            mXMarker!!.draw(canvas, pos[0] - xMarker!!.measuredWidth / 2, measuredHeight.toFloat())
+            mXMarker?.draw(canvas, pos[0] - xMarker!!.measuredWidth / 2, measuredHeight.toFloat() - xMarker.measuredHeight)
+            yMarker?.draw(canvas, 0f, pos[1] - yMarker.measuredHeight / 2)
             //            } else {
             //                mMarker.draw(canvas, pos[0], pos[1]);
             //            }
@@ -198,6 +209,4 @@ class CustomCombinedChart @JvmOverloads constructor(context: Context, attrs: Att
     fun setYCenter(YCenter: Float) {
         mYCenter = YCenter
     }
-
-
 }

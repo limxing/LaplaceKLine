@@ -1,6 +1,7 @@
 package cn.laplacetech.klinelib.chart
 
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.TextView
 
@@ -18,12 +19,12 @@ import kotlinx.android.synthetic.main.view_mp_real_price_marker.view.*
  */
 class LineChartXMarkerView(context: Context, private val mList: List<HisData>?) : MarkerView(context, R.layout.view_mp_real_price_marker) {
 
-
+    val dateFormatString = "yyyy-MM-dd"
 
     override fun refreshContent(e: Entry, highlight: Highlight) {
         val value = e.x.toInt()
         if (mList != null && value < mList.size) {
-            tvContent.text = DateUtils.formatTime(mList[value].date)
+            tvContent.text = DateUtils.formatDate(mList[value].date, dateFormatString)
         }
         super.refreshContent(e, highlight)
     }

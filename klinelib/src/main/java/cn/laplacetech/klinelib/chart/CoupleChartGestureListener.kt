@@ -67,11 +67,8 @@ class CoupleChartGestureListener(private val srcChart: BarLineChartBase<*>, vara
     }
 
     override fun onChartTranslate(me: MotionEvent, dX: Float, dY: Float) {
-        //        Log.d(TAG, "onChartTranslate " + dX + "/" + dY + " X=" + me.getX() + "Y=" + me.getY());
-        Log.d(TAG, srcChart.lowestVisibleX.toString() + "")
-        //        Log.d(TAG, "getHighestVisibleX  " +srcChart.getHighestVisibleX());
         listener?.onAxisChange(srcChart)
-//        listener?.onAxisTranslate(null)
+        listener?.onAxisTranslate(srcChart)
         performLoadMore()
         syncCharts()
     }
@@ -87,12 +84,11 @@ class CoupleChartGestureListener(private val srcChart: BarLineChartBase<*>, vara
     }
 
     private fun syncCharts() {
-        val srcMatrix: Matrix
+        val srcMatrix: Matrix = srcChart.viewPortHandler.matrixTouch
         val srcVals = FloatArray(9)
         var dstMatrix: Matrix
         val dstVals = FloatArray(9)
         // get src chart translation matrix:
-        srcMatrix = srcChart.viewPortHandler.matrixTouch
         srcMatrix.getValues(srcVals)
         // apply X axis scaling and position to dst charts:
         for (dstChart in dstCharts) {

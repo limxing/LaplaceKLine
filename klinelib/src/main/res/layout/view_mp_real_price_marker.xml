@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:layout_gravity="center"
+        android:background="@color/ma5"
+        android:paddingBottom="1dp"
         android:paddingLeft="4dp"
-        android:background="@color/marker_color"
         android:paddingRight="4dp"
-        tools:text="aaaaaaa"
-        android:textColor="@color/marker_text_color"
+        android:paddingTop="1dp"
+        android:singleLine="true"
+        android:textColor="#fff"
         android:textSize="10sp"
-        />
+        tools:text="" />
 
 </LinearLayout>

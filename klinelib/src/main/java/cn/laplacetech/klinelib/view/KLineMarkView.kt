@@ -82,7 +82,7 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         super.onDraw(canvas)
         if (info.size == 0) return
 
-        if (xPx != -1 && yPx != -1) {
+        if (xPx != -1 && yPx != -1 && false) {
             val value = info[3].text
             paint.getTextBounds(value, 0, value.length, textR)
 
@@ -245,6 +245,9 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 //    private var highlight: Highlight? = null
 
     private lateinit var timeTitle: String
+    fun isShowing(): Boolean {
+        return this.info.size == 0
+    }
 
     /**
      *
@@ -339,13 +342,10 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private var lastDx: Int = 0
 
-    fun translate(highlighted: Array<Highlight>) {
-        if (highlighted.isNotEmpty() && info.size > 0) {
-            xPx = highlighted[0].xPx.toInt()
-            yPx = highlighted[0].yPx.toInt()
-            invalidate()
-
-        }
+    fun translate(h: FloatArray) {
+        if (this.info.size == 0 ) return
+        xPx = h[0].toInt()
+        yPx = h[1].toInt()
 //        if (this.info.size == 0 ) return
 //        this.xPx = xPx + (dX.toInt() - lastDx)
     }

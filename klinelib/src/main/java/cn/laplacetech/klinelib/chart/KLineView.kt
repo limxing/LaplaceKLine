@@ -14,16 +14,6 @@ import com.github.mikephil.charting.charts.BarLineChartBase
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.CandleData
-import com.github.mikephil.charting.data.CandleDataSet
-import com.github.mikephil.charting.data.CandleEntry
-import com.github.mikephil.charting.data.CombinedData
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
@@ -33,6 +23,7 @@ import cn.laplacetech.klinelib.util.DataUtils
 import cn.laplacetech.klinelib.util.DateUtils
 import cn.laplacetech.klinelib.util.DisplayUtils
 import cn.laplacetech.klinelib.util.DoubleUtil
+import com.github.mikephil.charting.data.*
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.view_kline.view.*
@@ -130,9 +121,18 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         price_chart.isDragDecelerationEnabled = false//是否滑动
         price_chart.isHighlightPerDragEnabled = false
         price_chart.description.isEnabled = false
+
+        //设置时间的覆层
         val mvx = LineChartXMarkerView(mContext, mData)
         mvx.chartView = price_chart
+        mvx.setOffset(0f, -resources.getDimension(R.dimen.bottom_chart_height) - 2 * resources.displayMetrics.density)
         price_chart.setXMarker(mvx)
+
+        val mvy = LineChartYMarkerView(mContext)
+        mvy.chartView = price_chart
+        price_chart.setYMarker(mvy)
+
+
         val lineChartLegend = price_chart.legend
         lineChartLegend.isEnabled = false
 
@@ -252,7 +252,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
 //        macd_chart.xAxis.axisMaximum = macd_chart.data.xMax + 0.5f
 //        kdj_chart.xAxis.axisMaximum = kdj_chart.data.xMax + 0.5f
-        price_chart.moveViewToX(mData.size - 1f)
 
         //设置当前缩放程度
         for (i in 0..2) {
@@ -292,7 +291,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
         val currentScale = MAX_COUNT * 1f / INIT_COUNT
         val lastScale = price_chart.viewPortHandler.scaleX
-        Logger.i("$lastScale  $currentScale")
 
         val toScale = currentScale / lastScale
 
@@ -362,6 +360,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
         price_chart.notifyDataSetChanged()
         price_chart.xAxis.axisMaximum = price_chart.data.xMax + 0.5f
+        price_chart.moveViewToX(mData.size - 1f)
 
 //        moveToLast(price_chart)
         return combinedData
@@ -517,7 +516,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         vol_chart.data = combinedData
         vol_chart.notifyDataSetChanged()
         vol_chart.xAxis.axisMaximum = vol_chart.data.xMax + 0.5f
-//        vol_chart.moveViewToX(mData.size - 1f)
+        vol_chart.moveViewToX(mData.size - 1f)
         return combinedData
     }
 
@@ -872,7 +871,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
     }
 
-
+    /**
+     * x 轴移动回调
+     */
     override fun onAxisChange(chart: BarLineChartBase<*>) {
         val lowestVisibleX = chart.lowestVisibleX
         if (lowestVisibleX <= chart.xAxis.axisMinimum) return
@@ -880,11 +881,28 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         val x = Math.min(maxX, mData.size - 1)
         val hisData = mData[if (x < 0) 0 else x]
         setChartDescription(hisData)
-        k_info_mark.closeHightLight()
+//        k_info_mark.closeHightLight()
     }
 
     override fun onAxisTranslate(chart: BarLineChartBase<*>) {
 //        k_info_mark.translate(price_chart.,dY)
+//        Logger.i("onAxisTranslate")
+
+//        if (!chart.valuesToHighlight()) return
+//        val mIndicesToHighlight = chart.highlighted
+//        val mData = chart.data
+//        for (i in mIndicesToHighlight.indices) {
+//            val highlight = mIndicesToHighlight[i]
+//            val set = mData.getDataSetByIndex(highlight.dataSetIndex)
+//            val e = mData.getEntryForHighlight(mIndicesToHighlight[i])
+//            if (e == null || set.getEntryIndex(e.x, e.y, DataSet.Rounding.CLOSEST) > set.entryCount * chart.mAnimator.phaseX)
+//                continue
+//            val pos = floatArrayOf(highlight.drawX, highlight.drawY)
+//            if (!chart.viewPortHandler.isInBounds(pos[0], pos[1]))
+//                continue
+//           k_info_mark.translate(pos)
+//        }
+
     }
 
     fun setOnLoadMoreListener(l: OnLoadMoreListener) {
