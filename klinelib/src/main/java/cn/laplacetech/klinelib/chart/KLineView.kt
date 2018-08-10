@@ -25,6 +25,7 @@ import cn.laplacetech.klinelib.util.DateUtils
 import cn.laplacetech.klinelib.util.DisplayUtils
 import cn.laplacetech.klinelib.util.DoubleUtil
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.listener.BarLineChartTouchListener
 import kotlinx.android.synthetic.main.view_kline.view.*
 
 import java.util.ArrayList
@@ -126,7 +127,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         price_chart.isDragEnabled = true
         price_chart.isScaleYEnabled = false
         price_chart.isAutoScaleMinMaxEnabled = true//没用到啊
-        price_chart.isDragDecelerationEnabled = false//是否滑动
+        price_chart.isDragDecelerationEnabled = true//是否滑动
         price_chart.isHighlightPerDragEnabled = false
         price_chart.description.isEnabled = false
 
@@ -151,7 +152,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         xAxisPrice.setDrawGridLines(false)
         xAxisPrice.gridColor = Color.RED
         xAxisPrice.axisMinimum = -0.5f
-        xAxisPrice.setAvoidFirstLastClipping(false)
+        xAxisPrice.setAvoidFirstLastClipping(true)//避免超出界面不绘制
         xAxisPrice.setLabelCount(4, true)
         xAxisPrice.textColor = mAxisColor
         xAxisPrice.position = XAxis.XAxisPosition.BOTTOM
@@ -170,7 +171,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
         //横向网格，Y轴数据，左边的Y轴
         val axisLeftPrice = price_chart.axisLeft
-        axisLeftPrice.setLabelCount(5, true)
+        axisLeftPrice.setLabelCount(5, false)
+//        axisLeftPrice.spaceBottom = 10f
         axisLeftPrice.setDrawLabels(true)
         axisLeftPrice.setDrawGridLines(true)//横向的网格 Y值
         axisLeftPrice.gridColor = resources.getColor(R.color.chart_border)//网格颜色
@@ -194,7 +196,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         val axisRightPrice = price_chart.axisRight
         axisRightPrice.setLabelCount(5, true)
         axisRightPrice.setDrawLabels(false)
-
         axisRightPrice.setDrawGridLines(false)
         axisRightPrice.setDrawAxisLine(false)
 
@@ -238,6 +239,9 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
      * 初始化方法
      */
     fun initData(hisDatas: List<HisData>) {
+
+        //停止滑动，防止在此设置时 缩放错乱
+        (price_chart.onTouchListener as? BarLineChartTouchListener)?.stopDeceleration()
         mData.clear()
         mData.addAll(DataUtils.calculateHisData(hisDatas))
 //        if (mData.size< MAX_COUNT_FLAG){
@@ -283,7 +287,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         //为蒙版设置时间格式化
         k_info_mark.setDataFormatString(mDateFormat, isRedDown)//时间高亮由系统控件展示,但是红绿还需要控制
         (price_chart.getXMarkView() as LineChartXMarkerView).dateFormatString = mDateFormat
-
     }
 
     /**
@@ -859,7 +862,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
      * 设置虚线表示当前价格
      */
     private fun setLimitLine() {
-        val limitLine = LimitLine(mData.last().close?.toFloat() ?: 0f,"${mData.last().close}")
+        val limitLine = LimitLine(mData.last().close?.toFloat() ?: 0f,"${mData.last().close ?: 0.0}")
         limitLine.enableDashedLine(5f, 10f, 0f)
         limitLine.lineColor = resources.getColor(R.color.limit_color)
         price_chart.axisLeft.removeAllLimitLines()

@@ -79,7 +79,7 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
         chart.isDragEnabled = true
         chart.isScaleYEnabled = false
         chart.isAutoScaleMinMaxEnabled = true
-        chart.isDragDecelerationEnabled = false
+        chart.isDragDecelerationEnabled = true
         chart.isHighlightPerDragEnabled = false
         val lineChartLegend = chart.legend
         lineChartLegend.isEnabled = false
