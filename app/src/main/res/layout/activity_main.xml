@@ -23,6 +23,7 @@
             <cn.laplacetech.klinelib.chart.KLineView
                 android:id="@+id/klineview"
                 android:layout_width="match_parent"
+                app:showLimitline="true"
                 android:layout_height="260dp"
                 android:background="#fff"
                 android:paddingLeft="16dp"

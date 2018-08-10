@@ -31,7 +31,7 @@
     <color name="chart_no_data_color">#be945c</color>
     <!--成交额图标的选中颜色-->
     <color name="highlight_color">#000</color>
-    <color name="limit_color">#adadad</color>
+    <color name="limit_color">#f00</color>
     <color name="white">#fff</color>
     <color name="chart_border">#ccc</color>
     <color name="kline_mark_bac">#F0F1F4</color>

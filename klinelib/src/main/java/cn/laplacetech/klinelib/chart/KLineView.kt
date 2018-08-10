@@ -59,7 +59,12 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
     private var vibrator: Vibrator?
 
+    private var showLimitline: Boolean
+
     init {
+        val att = mContext.obtainStyledAttributes(attrs, R.styleable.LaplaceKline)
+        showLimitline = att.getBoolean(R.styleable.LaplaceKline_showLimitline, false)
+        att.recycle()
         LayoutInflater.from(mContext).inflate(R.layout.view_kline, this)
         k_info_mark.setChart(price_chart, vol_chart, macd_chart, kdj_chart)
 
@@ -178,7 +183,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         axisLeftPrice.yOffset = -5f// Y轴的标签是否偏移，默认在线上
 
         val colorArray = intArrayOf(mDecreasingColor, mDecreasingColor, mAxisColor, mIncreasingColor, mIncreasingColor)
-
         val leftYTransformer = price_chart.rendererLeftYAxis.transformer
         val leftColorContentYAxisRenderer = ColorContentYAxisRenderer(price_chart.viewPortHandler, price_chart.axisLeft, leftYTransformer)
         leftColorContentYAxisRenderer.setLabelColor(colorArray)
@@ -242,7 +246,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         setCount(INIT_COUNT, mData.size, MIN_COUNT)//最大就是集合的大小，初始化当前
 //        }
         price_chart.realCount = mData.size
-
+        if (showLimitline)
+            setLimitLine()
         initChartPriceData()
         initChartVolumeData()
 //        initChartMacdData()
@@ -357,11 +362,10 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         combinedData.setData(lineData)
         combinedData.setData(candleData)
         price_chart.data = combinedData
-
-        price_chart.notifyDataSetChanged()
         price_chart.xAxis.axisMaximum = price_chart.data.xMax + 0.5f
-        price_chart.moveViewToX(mData.size - 1f)
 
+        price_chart.moveViewToX(mData.size - 1f)
+        price_chart.notifyDataSetChanged()
 //        moveToLast(price_chart)
         return combinedData
     }
@@ -852,13 +856,13 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
 
     /**
-     * add limit line to chart
+     * 设置虚线表示当前价格
      */
-    @JvmOverloads
-    fun setLimitLine(lastClose: Double = mLastClose) {
-        val limitLine = LimitLine(lastClose.toFloat())
+    private fun setLimitLine() {
+        val limitLine = LimitLine(mData.last().close?.toFloat() ?: 0f,"${mData.last().close}")
         limitLine.enableDashedLine(5f, 10f, 0f)
         limitLine.lineColor = resources.getColor(R.color.limit_color)
+        price_chart.axisLeft.removeAllLimitLines()
         price_chart.axisLeft.addLimitLine(limitLine)
     }
 
