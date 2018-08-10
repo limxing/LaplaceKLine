@@ -209,4 +209,12 @@ class CustomCombinedChart @JvmOverloads constructor(context: Context, attrs: Att
     fun setYCenter(YCenter: Float) {
         mYCenter = YCenter
     }
+
+    fun getYMarkView(): IMarker? {
+        return mYMarker
+    }
+
+    fun getXMarkView(): IMarker? {
+        return mXMarker
+    }
 }

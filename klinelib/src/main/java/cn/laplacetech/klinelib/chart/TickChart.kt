@@ -288,7 +288,7 @@ class TickChart : RelativeLayout {
         line_chart.isAutoScaleMinMaxEnabled = true
         line_chart.isLogEnabled = BuildConfig.DEBUG
 
-        val mv = LineChartYMarkerView(context)
+        val mv = LineChartYMarkerView(context,mList)
         mv.chartView = line_chart
         line_chart.marker = mv
         line_chart.setOnChartValueSelectedListener(InfoViewListener(context, 56.86, mList, info))

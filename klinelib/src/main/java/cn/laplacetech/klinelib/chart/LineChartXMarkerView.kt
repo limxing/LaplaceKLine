@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.view_mp_real_price_marker.view.*
  */
 class LineChartXMarkerView(context: Context, private val mList: List<HisData>?) : MarkerView(context, R.layout.view_mp_real_price_marker) {
 
-    val dateFormatString = "yyyy-MM-dd"
+    var dateFormatString = "yyyy-MM-dd"
 
     override fun refreshContent(e: Entry, highlight: Highlight) {
         val value = e.x.toInt()

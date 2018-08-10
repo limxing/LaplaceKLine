@@ -87,6 +87,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
                 initData(list)
 
             }, 100)
+
     }
 
     fun showKdj() {
@@ -128,7 +129,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         mvx.setOffset(0f, -resources.getDimension(R.dimen.bottom_chart_height) - 2 * resources.displayMetrics.density)
         price_chart.setXMarker(mvx)
 
-        val mvy = LineChartYMarkerView(mContext)
+        val mvy = LineChartYMarkerView(mContext,mData)
         mvy.chartView = price_chart
         price_chart.setYMarker(mvy)
 
@@ -277,7 +278,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
                     hisData?.k, hisData?.d, hisData?.j))
 
         //为蒙版设置时间格式化
-        k_info_mark.setDataFormatString(mDateFormat, isRedDown)
+        k_info_mark.setDataFormatString(mDateFormat, isRedDown)//时间高亮由系统控件展示,但是红绿还需要控制
+        (price_chart.getXMarkView() as LineChartXMarkerView).dateFormatString = mDateFormat
 
     }
 

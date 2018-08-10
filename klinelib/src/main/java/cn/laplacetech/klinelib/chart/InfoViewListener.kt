@@ -86,6 +86,7 @@ class InfoViewListener : OnChartValueSelectedListener {
 
     override fun onNothingSelected() {
         mInfoView?.visibility = View.GONE
+        mMarkView?.visibility = View.GONE
         if (mOtherChart != null) {
             for (i in mOtherChart?.indices!!) {
                 mOtherChart!![i].highlightValues(null)
