@@ -89,6 +89,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
             }, 100)
         vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
     }
 
     fun showKdj() {
@@ -138,7 +139,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         val lineChartLegend = price_chart.legend
         lineChartLegend.isEnabled = false
 
-
         //顶部X轴
         val xAxisPrice = price_chart.xAxis
         xAxisPrice.setDrawLabels(true)//
@@ -146,7 +146,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         xAxisPrice.setDrawGridLines(false)
         xAxisPrice.gridColor = Color.RED
         xAxisPrice.axisMinimum = -0.5f
-        xAxisPrice.setAvoidFirstLastClipping(true)
+        xAxisPrice.setAvoidFirstLastClipping(false)
         xAxisPrice.setLabelCount(4, true)
         xAxisPrice.textColor = mAxisColor
         xAxisPrice.position = XAxis.XAxisPosition.BOTTOM
