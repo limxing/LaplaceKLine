@@ -242,8 +242,9 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (mXAxis.isEnabled() && !mXAxis.isDrawLimitLinesBehindDataEnabled())
             mXAxisRenderer.renderLimitLines(canvas);
 
-        if (mAxisLeft.isEnabled() && !mAxisLeft.isDrawLimitLinesBehindDataEnabled())
-            mAxisRendererLeft.renderLimitLines(canvas);
+        //调整为在画Y轴之后
+//        if (mAxisLeft.isEnabled() && !mAxisLeft.isDrawLimitLinesBehindDataEnabled())
+//            mAxisRendererLeft.renderLimitLines(canvas);
 
         if (mAxisRight.isEnabled() && !mAxisRight.isDrawLimitLinesBehindDataEnabled())
             mAxisRendererRight.renderLimitLines(canvas);
@@ -266,7 +267,9 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         mLegendRenderer.renderLegend(canvas);
 
         drawDescription(canvas);
-
+        //调整画限制线到画MarkView之前
+        if (mAxisLeft.isEnabled() && !mAxisLeft.isDrawLimitLinesBehindDataEnabled())
+            mAxisRendererLeft.renderLimitLines(canvas);
         drawMarkers(canvas);
 
         if (mLogEnabled) {
