@@ -22,3 +22,6 @@ dependencies {
     implementation 'com.github.limxing:LaplaceKLine:1.0.9'
 }
 ```
+
+#### License
+LaplaceKLine is available under the MIT license.
