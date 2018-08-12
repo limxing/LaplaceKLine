@@ -51,29 +51,34 @@ object DoubleUtil {
         return String.format(Locale.getDefault(), "%." + digits + "f", num)
     }
 
-    private val MILLION = 10000.0
-    private val MILLIONS = 1000000.0
-    private val BILLION = 100000000.0
-    private val MILLION_UNIT = "万"
-    private val BILLION_UNIT = "亿"
+    private const val MILLION = 10000.0
+    private const val MILLIONS = 1000000.0
+    private const val BILLION = 100000000.0
+    private const val MILLION_UNIT = "万"
+    private const val BILLION_UNIT = "亿"
 
 
     /**
      * 将数字转换成以万为单位或者以亿为单位，因为在前端数字太大显示有问题
      */
     fun amountConversion(amount: Double, keepTwoDigits: Boolean): String {
-
-        if (amount < 0.001 && !keepTwoDigits) {
-            return "$amount"
-        }
-        if (amount < 1 && !keepTwoDigits) {
-            return formatDecimal(amount)
-        }
-        val lengthInt = "${amount.toInt()}".length
-        if (lengthInt < 8 && !keepTwoDigits) {
-            return getStringByDigits(amount, 8 - lengthInt)
-        }
-        return formatNumberInfo(amount).toString()
+        var result: String
+        result = if (amount < 0.001 && !keepTwoDigits) {
+            "$amount"
+        }else
+            if (amount < 1 && !keepTwoDigits) {
+                formatDecimal(amount)
+            }else {
+                val lengthInt = "${amount.toInt()}".length
+                if (lengthInt < 8 && !keepTwoDigits) {
+                    getStringByDigits(amount, 8 - lengthInt)
+                }else{
+                    formatNumberInfo(amount).toString()
+                }
+            }
+//        while (result.contains('.')&& result.endsWith('0')){
+//        }
+        return result
     }
 
     /**
@@ -87,7 +92,7 @@ object DoubleUtil {
      * @return
      */
 
-    fun formatNumberInfo(amount: Double): NumberInfo {
+    private fun formatNumberInfo(amount: Double): NumberInfo {
         var amount = amount
         val info = NumberInfo()
         if (amount == 0.0) {

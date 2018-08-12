@@ -28,7 +28,6 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (mLineCharts != null) {
             for (chart in mLineCharts!!) {
                 chart.highlightValue(null)
-
             }
         }
     }
@@ -65,15 +64,6 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     }
 
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-//        if (newConfig?.orientation == ORIENTATION_LANDSCAPE) {
-//            this.pTop = 20
-//        } else {
-//            this.pTop = 0
-//        }
-    }
 
     private var xPx: Int = 0
     private var yPx: Int = 0
@@ -129,11 +119,6 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
 
         }
-
-
-
-
-
 
         if (!isRight) {
             bacRect.left = measuredWidth - bacRight - 100 * density

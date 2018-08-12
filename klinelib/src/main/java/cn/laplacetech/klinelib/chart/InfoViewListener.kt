@@ -72,9 +72,9 @@ class InfoViewListener : OnChartValueSelectedListener {
         }
         val lp = mInfoView?.layoutParams as? FrameLayout.LayoutParams
         if (h.xPx < mWidth / 2) {
-            lp?.gravity = Gravity.RIGHT
+            lp?.gravity = Gravity.END
         } else {
-            lp?.gravity = Gravity.LEFT
+            lp?.gravity = Gravity.START
         }
         mInfoView?.layoutParams = lp
         if (mOtherChart != null) {

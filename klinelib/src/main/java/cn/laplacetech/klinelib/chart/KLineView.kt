@@ -1,10 +1,9 @@
 package cn.laplacetech.klinelib.chart
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.Vibrator
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -20,10 +19,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
 import cn.laplacetech.klinelib.R
 import cn.laplacetech.klinelib.model.HisData
-import cn.laplacetech.klinelib.util.DataUtils
-import cn.laplacetech.klinelib.util.DateUtils
-import cn.laplacetech.klinelib.util.DisplayUtils
-import cn.laplacetech.klinelib.util.DoubleUtil
+import cn.laplacetech.klinelib.util.*
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.listener.BarLineChartTouchListener
 import kotlinx.android.synthetic.main.view_kline.view.*
@@ -35,7 +31,7 @@ import java.util.Locale
  * Created by lilifeng@laplacetech.cn on 2018/8/6.
  *
  */
-class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs: AttributeSet? = null,
+class KLineView @JvmOverloads constructor(var mContext: Context, attrs: AttributeSet? = null,
                                           defStyleAttr: Int = 0) : BaseView(mContext, attrs, defStyleAttr),
         CoupleChartGestureListener.OnAxisChangeListener {
 
@@ -95,19 +91,19 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
     }
 
-    fun showKdj() {
+    private fun showKdj() {
         vol_chart.visibility = View.GONE
         macd_chart.visibility = View.GONE
         kdj_chart.visibility = View.VISIBLE
     }
 
-    fun showMacd() {
+    private fun showMacd() {
         vol_chart.visibility = View.GONE
         macd_chart.visibility = View.VISIBLE
         kdj_chart.visibility = View.GONE
     }
 
-    fun showVolume() {
+    private fun showVolume() {
         macd_chart.visibility = View.GONE
         kdj_chart.visibility = View.GONE
         vol_chart.visibility = View.VISIBLE
@@ -116,11 +112,11 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     /**
      * 初始化K线图
      */
-    protected fun initChartPrice() {
+    private fun initChartPrice() {
         price_chart.setScaleEnabled(true)
         price_chart.setDrawBorders(true)//边框
         price_chart.setBorderWidth(0.5f)
-        price_chart.setBorderColor(resources.getColor(R.color.chart_border))
+        price_chart.setBorderColor(getColor(R.color.chart_border))
         price_chart.isDragEnabled = true
         price_chart.isScaleYEnabled = false
         price_chart.isAutoScaleMinMaxEnabled = true//没用到啊
@@ -131,7 +127,8 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         //设置时间的覆层
         val mvx = LineChartXMarkerView(mContext, mData)
         mvx.chartView = price_chart
-        mvx.setOffset(0f, -resources.getDimension(R.dimen.bottom_chart_height) - 2 * resources.displayMetrics.density)
+        mvx.setOffset(0f, -resources.getDimension(R.dimen.bottom_chart_height) - 2 *
+                resources.displayMetrics.density)
         price_chart.setXMarker(mvx)
 
         val mvy = LineChartYMarkerView(mContext, mData)
@@ -172,7 +169,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 //        axisLeftPrice.spaceBottom = 10f
         axisLeftPrice.setDrawLabels(true)
         axisLeftPrice.setDrawGridLines(true)//横向的网格 Y值
-        axisLeftPrice.gridColor = resources.getColor(R.color.chart_border)//网格颜色
+        axisLeftPrice.gridColor = getColor(R.color.chart_border)//网格颜色
         axisLeftPrice.setDrawAxisLine(false)//Y 轴轴线
         axisLeftPrice.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
         axisLeftPrice.textColor = mAxisColor
@@ -230,7 +227,6 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     }
 
 
-    private var lastDataCount: Int = 0
 
     /**
      * 初始化方法
@@ -306,6 +302,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     /**
      * 设置均线描述文字
      */
+    @SuppressLint("SetTextI18n")
     private fun setMADescriptions(ma5: Double?, ma10: Double?, ma20: Double?) {
 
         tv_ma5.text = "MA5: ${DoubleUtil.amountConversion(ma5 ?: 0.0, false)}"
@@ -375,7 +372,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         val barDataSet = BarDataSet(barEntries, "vol")
         barDataSet.highLightAlpha = 150
         barDataSet.setHighlightLineWidth(resources.getDimension(R.dimen.highlight_width))
-        barDataSet.highLightColor = resources.getColor(R.color.highlight_color)
+        barDataSet.highLightColor = getColor(R.color.highlight_color)
         barDataSet.setDrawValues(false)
         barDataSet.isVisible = type != INVISIABLE_LINE
         barDataSet.isHighlightEnabled = type != INVISIABLE_LINE
@@ -389,55 +386,55 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         lineDataSetMa.setDrawValues(false)
         when (type) {
             NORMAL_LINE -> {
-                lineDataSetMa.color = resources.getColor(R.color.normal_line_color)
+                lineDataSetMa.color = getColor(R.color.normal_line_color)
                 lineDataSetMa.setCircleColor(ContextCompat.getColor(mContext, R.color.normal_line_color))
             }
             K -> {
-                lineDataSetMa.color = resources.getColor(R.color.k)
+                lineDataSetMa.color = getColor(R.color.k)
                 lineDataSetMa.setCircleColor(mTransparentColor)
             }
             D -> {
-                lineDataSetMa.color = resources.getColor(R.color.d)
+                lineDataSetMa.color = getColor(R.color.d)
                 lineDataSetMa.setCircleColor(mTransparentColor)
                 lineDataSetMa.isHighlightEnabled = false
             }
             J -> {
-                lineDataSetMa.color = resources.getColor(R.color.j)
+                lineDataSetMa.color = getColor(R.color.j)
                 lineDataSetMa.setCircleColor(mTransparentColor)
                 lineDataSetMa.isHighlightEnabled = false
             }
             DIF -> {
-                lineDataSetMa.color = resources.getColor(R.color.dif)
+                lineDataSetMa.color = getColor(R.color.dif)
                 lineDataSetMa.setCircleColor(mTransparentColor)
                 lineDataSetMa.isHighlightEnabled = false
             }
             DEA -> {
-                lineDataSetMa.color = resources.getColor(R.color.dea)
+                lineDataSetMa.color = getColor(R.color.dea)
                 lineDataSetMa.setCircleColor(mTransparentColor)
                 lineDataSetMa.isHighlightEnabled = false
             }
             AVE_LINE -> {
-                lineDataSetMa.color = resources.getColor(R.color.ave_color)
+                lineDataSetMa.color = getColor(R.color.ave_color)
                 lineDataSetMa.setCircleColor(mTransparentColor)
                 lineDataSetMa.isHighlightEnabled = false
             }
             MA5 -> {
-                lineDataSetMa.color = resources.getColor(R.color.ma5)
+                lineDataSetMa.color = getColor(R.color.ma5)
                 lineDataSetMa.setCircleColor(mTransparentColor)
                 lineDataSetMa.isHighlightEnabled = false
             }
             MA10 -> {
-                lineDataSetMa.color = resources.getColor(R.color.ma10)
+                lineDataSetMa.color = getColor(R.color.ma10)
                 lineDataSetMa.setCircleColor(mTransparentColor)
                 lineDataSetMa.isHighlightEnabled = false
             }
             MA20 -> {
-                lineDataSetMa.color = resources.getColor(R.color.ma20)
+                lineDataSetMa.color = getColor(R.color.ma20)
                 lineDataSetMa.setCircleColor(mTransparentColor)
                 lineDataSetMa.isHighlightEnabled = false
             }
             MA30 -> {
-                lineDataSetMa.color = resources.getColor(R.color.ma30)
+                lineDataSetMa.color = getColor(R.color.ma30)
                 lineDataSetMa.setCircleColor(mTransparentColor)
                 lineDataSetMa.isHighlightEnabled = false
             }
@@ -456,7 +453,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         return lineDataSetMa
     }
 
-    fun setKLine(type: Int, lineEntries: ArrayList<CandleEntry>): CandleDataSet {
+    private fun setKLine(type: Int, lineEntries: ArrayList<CandleEntry>): CandleDataSet {
         val set = CandleDataSet(lineEntries, "KLine$type")
         set.setDrawIcons(false)
         set.axisDependency = YAxis.AxisDependency.LEFT
@@ -471,7 +468,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
         set.setDrawValues(true)
         set.valueTextSize = 10f
         set.isHighlightEnabled = true
-        set.highLightColor = resources.getColor(R.color.highlight_color)
+        set.highLightColor = getColor(R.color.highlight_color)
         set.highlightLineWidth = resources.getDimension(R.dimen.highlight_width)
         set.setmHighlightLineAlpha(150)
 
@@ -861,7 +858,7 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     private fun setLimitLine() {
         val limitLine = LimitLine(mData.last().close?.toFloat() ?: 0f,"${mData.last().close ?: 0.0}")
         limitLine.enableDashedLine(5f, 10f, 0f)
-        limitLine.lineColor = resources.getColor(R.color.limit_color)
+        limitLine.lineColor = getColor(R.color.limit_color)
         price_chart.axisLeft.removeAllLimitLines()
         price_chart.axisLeft.addLimitLine(limitLine)
     }
@@ -924,28 +921,28 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
     companion object {
 
 
-        val NORMAL_LINE = 0
+        const val NORMAL_LINE = 0
         /**
          * average line
          */
-        val AVE_LINE = 1
+        const val AVE_LINE = 1
         /**
          * hide line
          */
-        val INVISIABLE_LINE = 6
+        const val INVISIABLE_LINE = 6
 
 
-        val MA5 = 5
-        val MA10 = 10
-        val MA20 = 20
-        val MA30 = 30
+        const val MA5 = 5
+        const val MA10 = 10
+        const val MA20 = 20
+        const val MA30 = 30
 
-        val K = 31
-        val D = 32
-        val J = 33
+        const val K = 31
+        const val D = 32
+        const val J = 33
 
-        val DIF = 34
-        val DEA = 35
+        const val DIF = 34
+        const val DEA = 35
     }
 
     /**
@@ -970,10 +967,4 @@ class KLineView @JvmOverloads constructor(protected var mContext: Context, attrs
 
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-//        moveToLast(price_chart)
-//        price_chart.moveViewToX(mData.size - 1f)
-//        initScale()
-    }
 }
