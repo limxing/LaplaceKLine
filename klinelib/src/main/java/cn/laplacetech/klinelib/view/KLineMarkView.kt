@@ -24,7 +24,6 @@ import kotlin.collections.ArrayList
 class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     protected var mRunnable: Runnable = Runnable {
-        visibility = View.GONE
         if (mLineCharts != null) {
             for (chart in mLineCharts!!) {
                 chart.highlightValue(null)
@@ -238,6 +237,9 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
      *
      */
     fun update(info: HisData?, h: Highlight, listIndex: Int) {
+        if (h == null){
+
+        }
         if (this.info.size == 0 && info == null) return
         this.info.clear()
 
@@ -262,8 +264,8 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
 
         invalidate()
 
-        removeCallbacks(mRunnable)
-        postDelayed(mRunnable, 2000)
+//        removeCallbacks(mRunnable)
+//        postDelayed(mRunnable, 2000)
 
     }
 
@@ -320,15 +322,16 @@ class KLineMarkView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     fun closeHightLight() {
-        if (this.xPx == -1) return
+        if (this.xPx == -1 || info.size == 0) return
         this.xPx = -1
+        info.clear()
         invalidate()
     }
 
     private var lastDx: Int = 0
 
     fun translate(h: FloatArray) {
-        if (this.info.size == 0 ) return
+        if (this.info.size == 0) return
         xPx = h[0].toInt()
         yPx = h[1].toInt()
 //        if (this.info.size == 0 ) return

@@ -64,8 +64,6 @@ class InfoViewListener : OnChartValueSelectedListener {
         if (x < mList!!.size) {
             mInfoView?.visibility = View.VISIBLE
             mInfoView?.setData(mLastClose, mList!![x])
-
-
             mKlineView?.updateValueSelected(x,h)
         }
         val lp = mInfoView?.layoutParams as? FrameLayout.LayoutParams
@@ -89,6 +87,7 @@ class InfoViewListener : OnChartValueSelectedListener {
                 mOtherChart!![i].highlightValues(null)
             }
         }
+        mKlineView?.updateValueUnSelected()
     }
 }
 

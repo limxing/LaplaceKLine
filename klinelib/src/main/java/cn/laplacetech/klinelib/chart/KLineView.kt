@@ -285,6 +285,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
 
         //为蒙版设置时间格式化
         k_info_mark.setDataFormatString(mDateFormat, isRedDown)//时间高亮由系统控件展示,但是红绿还需要控制
+        price_chart.highlightValue(null, true)//取消高亮 详细显示
         (price_chart.getXMarkView() as LineChartXMarkerView).dateFormatString = mDateFormat
     }
 
@@ -973,6 +974,10 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
                     360 * resources.displayMetrics.density.toInt())
 
         }
+    }
+
+    fun updateValueUnSelected() {
+        k_info_mark.closeHightLight()
     }
 
 }
