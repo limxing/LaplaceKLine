@@ -69,13 +69,17 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         if (showDetailView)
             k_info_mark.setChart(price_chart, vol_chart, macd_chart, kdj_chart)
         price_chart.setNoDataText(mContext.getString(R.string.loading))
+        showVolume()
         initChartPrice()
-        initBottomChart(vol_chart)
-        initBottomChart(macd_chart)
-        initBottomChart(kdj_chart)
+        if (vol_chart.isVisible())
+            initBottomChart(vol_chart)
+        if (macd_chart.isVisible())
+            initBottomChart(macd_chart)
+        if (kdj_chart.isVisible())
+            initBottomChart(kdj_chart)
         setOffset()
         initChartListener()
-        showVolume()
+
         price_chart.isLogEnabled = false
         vol_chart.isLogEnabled = false
         macd_chart.isLogEnabled = false
@@ -128,7 +132,9 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         price_chart.isAutoScaleMinMaxEnabled = true//没用到啊
         price_chart.isDragDecelerationEnabled = true//是否滑动
         price_chart.isHighlightPerDragEnabled = false
+        price_chart.isHighlightPerTapEnabled = false//点击是否显示选中的数据
         price_chart.description.isEnabled = false
+
 
         //设置时间的覆层
         val mvx = LineChartXMarkerView(mContext, mData)
@@ -851,9 +857,12 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
                 DisplayUtils.dip2px(mContext, 20f)
         price_chart.setViewPortOffsets(0f, 0f, 0f, chartHeight.toFloat())
         val bottom = DisplayUtils.dip2px(mContext, 5f)
-        vol_chart.setViewPortOffsets(0f, 0f, 0f, bottom.toFloat())
-        macd_chart.setViewPortOffsets(0f, 0f, 0f, bottom.toFloat())
-        kdj_chart.setViewPortOffsets(0f, 0f, 0f, bottom.toFloat())
+        if (vol_chart.isVisible())
+            vol_chart.setViewPortOffsets(0f, 0f, 0f, bottom.toFloat())
+        if (macd_chart.isVisible())
+            macd_chart.setViewPortOffsets(0f, 0f, 0f, bottom.toFloat())
+        if (kdj_chart.isVisible())
+            kdj_chart.setViewPortOffsets(0f, 0f, 0f, bottom.toFloat())
     }
 
 

@@ -617,6 +617,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         }
 
         if (!mChart.isHighlightPerTapEnabled()) {
+            performHighlight(null, e);
             return false;
         }
 
