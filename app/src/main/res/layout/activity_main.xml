@@ -9,9 +9,9 @@
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
-        android:background="#fff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#fff"
         app:elevation="1dp">
 
         <LinearLayout
@@ -23,11 +23,12 @@
             <cn.laplacetech.klinelib.chart.KLineView
                 android:id="@+id/klineview"
                 android:layout_width="match_parent"
-                app:showLimitline="true"
-                android:layout_height="260dp"
+                android:layout_height="360dp"
                 android:background="#fff"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp" />
+                android:paddingRight="16dp"
+                app:showDetailView="true"
+                app:showLimitLine="true" />
 
         </LinearLayout>
 

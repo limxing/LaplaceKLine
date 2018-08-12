@@ -87,6 +87,10 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
+
+    /**
+     * 屏幕翻转，设置全屏显示K线图
+     */
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
