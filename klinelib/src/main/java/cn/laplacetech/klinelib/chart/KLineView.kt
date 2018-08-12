@@ -872,8 +872,9 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
     private fun setLimitLine() {
         val limitLine = LimitLine(mData.last().close?.toFloat() ?: 0f, "${mData.last().close
                 ?: 0.0}")
-        limitLine.enableDashedLine(5f, 10f, 0f)
+        limitLine.enableDashedLine(15f, 15f, 0f)
         limitLine.lineColor = getColor(R.color.limit_color)
+        limitLine.labelPosition = LimitLine.LimitLabelPosition.LEFT_CENTER
         price_chart.axisLeft.removeAllLimitLines()
         price_chart.axisLeft.addLimitLine(limitLine)
     }

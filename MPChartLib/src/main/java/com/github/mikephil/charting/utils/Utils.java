@@ -165,6 +165,18 @@ public abstract class Utils {
         return r.height();
     }
 
+    /**
+     * calculates the approximate height and width of a text, depending on a demo text
+     * @param paint
+     * @param demoText
+     * @return
+     */
+    public static int[] calcTextWandH(Paint paint,String demoText){
+        Rect r = mCalcTextHeightRect;
+        r.set(0,0,0,0);
+        paint.getTextBounds(demoText, 0, demoText.length(), r);
+        return new int[]{r.width(),r.height()};
+    }
     private static Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
 
     public static float getLineHeight(Paint paint) {
