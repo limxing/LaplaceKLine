@@ -2,6 +2,7 @@
 <resources>
 
     <declare-styleable name="LaplaceKline">
-        <attr name="showLimitline" format="boolean"/>
+        <attr name="showLimitLine" format="boolean"/>
+        <attr name="showDetailView" format="boolean"/>
     </declare-styleable>
 </resources>

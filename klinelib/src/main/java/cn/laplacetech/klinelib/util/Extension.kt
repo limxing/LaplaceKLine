@@ -3,6 +3,7 @@ package cn.laplacetech.klinelib.util
 import android.content.Context
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.view.View
 import cn.laplacetech.klinelib.chart.BaseView
 
 /**
@@ -16,4 +17,16 @@ fun BaseView.getColor(id: Int): Int {
     }
 
 
+}
+
+fun View.isVisible(): Boolean {
+    return visibility == View.VISIBLE
+}
+
+fun View.visibleOrGone(visible: Boolean) {
+    visibility = if (visible) {
+        View.VISIBLE
+    } else {
+        View.GONE
+    }
 }

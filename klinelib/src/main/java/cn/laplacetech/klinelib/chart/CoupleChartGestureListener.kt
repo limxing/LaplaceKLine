@@ -68,7 +68,6 @@ class CoupleChartGestureListener(private val srcChart: BarLineChartBase<*>, vara
 
     override fun onChartTranslate(me: MotionEvent, dX: Float, dY: Float) {
         listener?.onAxisChange(srcChart)
-        listener?.onAxisTranslate(srcChart)
         performLoadMore()
         syncCharts()
     }
@@ -117,7 +116,6 @@ class CoupleChartGestureListener(private val srcChart: BarLineChartBase<*>, vara
     interface OnAxisChangeListener {
 
         fun onAxisChange(chart: BarLineChartBase<*>)
-        fun onAxisTranslate(dX: BarLineChartBase<*>)
     }
 
     companion object {

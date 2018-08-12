@@ -21,6 +21,7 @@ import cn.laplacetech.klinelib.R
 import cn.laplacetech.klinelib.model.HisData
 import cn.laplacetech.klinelib.util.*
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.BarLineChartTouchListener
 import kotlinx.android.synthetic.main.view_kline.view.*
 
@@ -54,15 +55,19 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
     private val mDigits = 2
     private var mCoupleChartGestureListener: CoupleChartGestureListener? = null
 
-    private var showLimitline: Boolean
+    private var showLimitLine: Boolean
+
+    private var showDetailView: Boolean
 
     init {
         val att = mContext.obtainStyledAttributes(attrs, R.styleable.LaplaceKline)
-        showLimitline = att.getBoolean(R.styleable.LaplaceKline_showLimitline, false)
+        showLimitLine = att.getBoolean(R.styleable.LaplaceKline_showLimitLine, false)
+        showDetailView = att.getBoolean(R.styleable.LaplaceKline_showDetailView, true)
         att.recycle()
         LayoutInflater.from(mContext).inflate(R.layout.view_kline, this)
-        k_info_mark.setChart(price_chart, vol_chart, macd_chart, kdj_chart)
-
+        k_info_mark.visibleOrGone(showDetailView)
+        if (showDetailView)
+            k_info_mark.setChart(price_chart, vol_chart, macd_chart, kdj_chart)
         price_chart.setNoDataText(mContext.getString(R.string.loading))
         initChartPrice()
         initBottomChart(vol_chart)
@@ -71,9 +76,10 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         setOffset()
         initChartListener()
         showVolume()
-
         price_chart.isLogEnabled = false
         vol_chart.isLogEnabled = false
+        macd_chart.isLogEnabled = false
+        kdj_chart.isLogEnabled = false
         if (mData.size == 0)
             postDelayed({
                 val time = System.currentTimeMillis()
@@ -222,10 +228,9 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
     private fun initChartListener() {
         mCoupleChartGestureListener = CoupleChartGestureListener(this, price_chart, vol_chart, macd_chart, kdj_chart)
         price_chart.onChartGestureListener = mCoupleChartGestureListener
-        price_chart.setOnChartValueSelectedListener(InfoViewListener(this, context, mLastClose, mData, k_info_mark, vol_chart, macd_chart, kdj_chart))
+        price_chart.setOnChartValueSelectedListener(InfoViewListener(this, context, mLastClose, mData, vol_chart, macd_chart, kdj_chart))
         price_chart.setOnTouchListener(ChartInfoViewHandler(price_chart))
     }
-
 
 
     /**
@@ -233,7 +238,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
      */
     fun initData(hisDatas: List<HisData>) {
 
-        //停止滑动，防止在此设置时 缩放错乱
+        //停止滑动，防止再次设置时 缩放错乱
         (price_chart.onTouchListener as? BarLineChartTouchListener)?.stopDeceleration()
         mData.clear()
         mData.addAll(DataUtils.calculateHisData(hisDatas))
@@ -243,23 +248,18 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         setCount(INIT_COUNT, mData.size, MIN_COUNT)//最大就是集合的大小，初始化当前
 //        }
         price_chart.realCount = mData.size
-        if (showLimitline)
+
+        if (showLimitLine)
             setLimitLine()
         initChartPriceData()
         initChartVolumeData()
-//        initChartMacdData()
-//        initChartKdjData()
-
-
-//        macd_chart.xAxis.axisMaximum = macd_chart.data.xMax + 0.5f
-//        kdj_chart.xAxis.axisMaximum = kdj_chart.data.xMax + 0.5f
-
+        if (macd_chart.isVisible())
+            initChartMacdData()
+        if (kdj_chart.isVisible())
+            initChartKdjData()
         //设置当前缩放程度
         for (i in 0..2) {
             initScale()
-            //      macd_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
-//            kdj_chart.zoom(MAX_COUNT * 1f / INIT_COUNT, 0f, 0f, 0f)
-
         }
 
 
@@ -288,15 +288,24 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
     private fun initScale() {
 
         price_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())//设置可放大的最大程度
-        vol_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())
+        if (vol_chart.isVisible())
+            vol_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())
+        if (macd_chart.isVisible())
+            macd_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())
+        if (kdj_chart.isVisible())
+            kdj_chart.setVisibleXRange(MAX_COUNT_FLAG.toFloat() * 2f, MIN_COUNT.toFloat())
 
         val currentScale = MAX_COUNT * 1f / INIT_COUNT
         val lastScale = price_chart.viewPortHandler.scaleX
 
         val toScale = currentScale / lastScale
-
         price_chart.zoom(toScale, 0f, 0f, 0f)
-        vol_chart.zoom(toScale, 0f, 0f, 0f)
+        if (vol_chart.isVisible())
+            vol_chart.zoom(toScale, 0f, 0f, 0f)
+        if (macd_chart.isVisible())
+            macd_chart.zoom(toScale, 0f, 0f, 0f)
+        if (kdj_chart.isVisible())
+            kdj_chart.zoom(toScale, 0f, 0f, 0f)
     }
 
     /**
@@ -546,11 +555,9 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         val lineData = LineData(setLine(DIF, difEntries), setLine(DEA, deaEntries))
         combinedData.setData(lineData)
         macd_chart.data = combinedData
-
-        macd_chart.setVisibleXRange(MAX_COUNT.toFloat(), MIN_COUNT.toFloat())
-
+        macd_chart.xAxis.axisMaximum = macd_chart.data.xMax + 0.5f
         macd_chart.notifyDataSetChanged()
-        moveToLast(macd_chart)
+        macd_chart.moveViewToX(mData.size - 1f)
     }
 
     private fun initChartKdjData() {
@@ -579,11 +586,9 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         val combinedData = CombinedData()
         combinedData.setData(lineData)
         kdj_chart.data = combinedData
-
-        macd_chart.setVisibleXRange(MAX_COUNT.toFloat(), MIN_COUNT.toFloat())
-
+        kdj_chart.xAxis.axisMaximum = kdj_chart.data.xMax + 0.5f
         kdj_chart.notifyDataSetChanged()
-        moveToLast(kdj_chart)
+        kdj_chart.moveViewToX(mData.size - 1f)
     }
 
 
@@ -856,7 +861,8 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
      * 设置虚线表示当前价格
      */
     private fun setLimitLine() {
-        val limitLine = LimitLine(mData.last().close?.toFloat() ?: 0f,"${mData.last().close ?: 0.0}")
+        val limitLine = LimitLine(mData.last().close?.toFloat() ?: 0f, "${mData.last().close
+                ?: 0.0}")
         limitLine.enableDashedLine(5f, 10f, 0f)
         limitLine.lineColor = getColor(R.color.limit_color)
         price_chart.axisLeft.removeAllLimitLines()
@@ -865,10 +871,10 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
 
     fun setLastClose(lastClose: Double) {
         mLastClose = lastClose
-        price_chart.setOnChartValueSelectedListener(InfoViewListener(this, mContext, mLastClose, mData, k_info_mark, vol_chart, macd_chart, kdj_chart))
-        vol_chart.setOnChartValueSelectedListener(InfoViewListener(this, mContext, mLastClose, mData, k_info_mark, price_chart, macd_chart, kdj_chart))
-        macd_chart.setOnChartValueSelectedListener(InfoViewListener(this, mContext, mLastClose, mData, k_info_mark, price_chart, vol_chart, kdj_chart))
-        kdj_chart.setOnChartValueSelectedListener(InfoViewListener(this, mContext, mLastClose, mData, k_info_mark, price_chart, vol_chart, macd_chart))
+        price_chart.setOnChartValueSelectedListener(InfoViewListener(this, mContext, mLastClose, mData, vol_chart, macd_chart, kdj_chart))
+        vol_chart.setOnChartValueSelectedListener(InfoViewListener(this, mContext, mLastClose, mData, price_chart, macd_chart, kdj_chart))
+        macd_chart.setOnChartValueSelectedListener(InfoViewListener(this, mContext, mLastClose, mData, price_chart, vol_chart, kdj_chart))
+        kdj_chart.setOnChartValueSelectedListener(InfoViewListener(this, mContext, mLastClose, mData, price_chart, vol_chart, macd_chart))
 
     }
 
@@ -885,26 +891,6 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
 //        k_info_mark.closeHightLight()
     }
 
-    override fun onAxisTranslate(chart: BarLineChartBase<*>) {
-//        k_info_mark.translate(price_chart.,dY)
-//        Logger.i("onAxisTranslate")
-
-//        if (!chart.valuesToHighlight()) return
-//        val mIndicesToHighlight = chart.highlighted
-//        val mData = chart.data
-//        for (i in mIndicesToHighlight.indices) {
-//            val highlight = mIndicesToHighlight[i]
-//            val set = mData.getDataSetByIndex(highlight.dataSetIndex)
-//            val e = mData.getEntryForHighlight(mIndicesToHighlight[i])
-//            if (e == null || set.getEntryIndex(e.x, e.y, DataSet.Rounding.CLOSEST) > set.entryCount * chart.mAnimator.phaseX)
-//                continue
-//            val pos = floatArrayOf(highlight.drawX, highlight.drawY)
-//            if (!chart.viewPortHandler.isInBounds(pos[0], pos[1]))
-//                continue
-//           k_info_mark.translate(pos)
-//        }
-
-    }
 
     fun setOnLoadMoreListener(l: OnLoadMoreListener) {
         if (mCoupleChartGestureListener != null) {
@@ -954,17 +940,29 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
 
     private var lastHisData: HisData? = null
 
-    fun updateValueSelected(hisData: HisData) {
-
-
-        if (lastData != hisData) {
-            setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol ?: 0.0, false))
+    fun updateValueSelected(x: Int, h: Highlight) {
+        val hisData = mData[x]
+        if (lastHisData != hisData) {
+            if (showDetailView)
+                k_info_mark.update(hisData, h, x)
+            setDescription(vol_chart, "VOL " + DoubleUtil.amountConversion(hisData.vol
+                    ?: 0.0, false))
             kLineViewListener?.onMaChanged(hisData)
             setMADescriptions(hisData.ma5, hisData.ma10, hisData.ma20)
             lastHisData = hisData
         }
 
 
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        val heightmode = View.MeasureSpec.getMode(heightMeasureSpec)
+        if (heightmode == MeasureSpec.AT_MOST) {
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+                    360 * resources.displayMetrics.density.toInt())
+
+        }
     }
 
 }

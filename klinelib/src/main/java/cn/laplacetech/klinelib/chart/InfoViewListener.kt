@@ -47,15 +47,14 @@ class InfoViewListener : OnChartValueSelectedListener {
         mOtherChart = otherChart
     }
 
-    private var mMarkView: KLineMarkView? = null
+//    private var mMarkView: KLineMarkView? = null
 
     private var mKlineView: KLineView? = null
 
-    constructor(klineView:KLineView, context: Context, lastClose: Double, list: List<HisData>, infoView: KLineMarkView, vararg otherChart: Chart<*>) {
+    constructor(klineView:KLineView, context: Context, lastClose: Double, list: List<HisData>,  vararg otherChart: Chart<*>) {
         mWidth = DisplayUtils.getWidthHeight(context)[0]
         mLastClose = lastClose
         mList = list
-        mMarkView = infoView
         mOtherChart = otherChart
         mKlineView = klineView
     }
@@ -65,10 +64,9 @@ class InfoViewListener : OnChartValueSelectedListener {
         if (x < mList!!.size) {
             mInfoView?.visibility = View.VISIBLE
             mInfoView?.setData(mLastClose, mList!![x])
-            mMarkView?.visibility = View.VISIBLE
 
-            mMarkView?.update(mList!![x], h, x)
-            mKlineView?.updateValueSelected(mList!![x])
+
+            mKlineView?.updateValueSelected(x,h)
         }
         val lp = mInfoView?.layoutParams as? FrameLayout.LayoutParams
         if (h.xPx < mWidth / 2) {
@@ -86,7 +84,6 @@ class InfoViewListener : OnChartValueSelectedListener {
 
     override fun onNothingSelected() {
         mInfoView?.visibility = View.GONE
-        mMarkView?.visibility = View.GONE
         if (mOtherChart != null) {
             for (i in mOtherChart?.indices!!) {
                 mOtherChart!![i].highlightValues(null)

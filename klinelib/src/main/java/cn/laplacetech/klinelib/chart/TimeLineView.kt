@@ -34,9 +34,6 @@ import java.util.Locale
  * Created by lilifeng@laplacetech.cn on 2017/10/26.
  */
 class TimeLineView @JvmOverloads constructor(protected var mContext: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : BaseView(mContext, attrs, defStyleAttr), CoupleChartGestureListener.OnAxisChangeListener {
-    override fun onAxisTranslate(dX: BarLineChartBase<*>) {
-
-    }
 
     protected var mChartPrice: CustomCombinedChart
     protected var mChartVolume: CustomCombinedChart
