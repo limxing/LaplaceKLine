@@ -185,7 +185,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         axisLeftPrice.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
         axisLeftPrice.textColor = mAxisColor
         axisLeftPrice.valueFormatter = IAxisValueFormatter { value, axis ->
-            DoubleUtil.amountConversion(value.toDouble(), true)
+            DoubleUtil.amountConversion(value.toDouble(), false)
         }
         axisLeftPrice.yOffset = -5f// Y轴的标签是否偏移，默认在线上
 

@@ -123,7 +123,7 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
         axisLeftVolume.spaceBottom = 0f
         axisLeftVolume.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
         axisLeftVolume.setValueFormatter { value, _ ->
-            DoubleUtil.amountConversion(value.toDouble(),true)
+            DoubleUtil.amountConversion(value.toDouble(),false)
         }
 
         val leftYTransformer = chart.rendererLeftYAxis.transformer
