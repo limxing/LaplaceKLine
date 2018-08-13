@@ -19,7 +19,7 @@ allprojects {
 App level build.gradle
 ```
 dependencies {
-    implementation 'com.github.limxing:LaplaceKLine:1.1.2'
+    implementation 'com.github.limxing:LaplaceKLine:<img src="https://jitpack.io/v/limxing/LaplaceKLine.svg"/>'
 }
 ```
 
