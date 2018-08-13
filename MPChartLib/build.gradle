@@ -24,4 +24,7 @@ android {
         unitTests.returnDefaultValues = true // this prevents "not mocked" error
     }
 }
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
 

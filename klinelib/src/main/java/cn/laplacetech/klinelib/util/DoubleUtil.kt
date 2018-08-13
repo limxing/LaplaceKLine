@@ -62,20 +62,23 @@ object DoubleUtil {
      * 将数字转换成以万为单位或者以亿为单位，因为在前端数字太大显示有问题
      */
     fun amountConversion(amount: Double, keepTwoDigits: Boolean): String {
-        var result: String
+        val result: String
         result = if (amount < 0.001 && !keepTwoDigits) {
-            "$amount"
-        }else
-            if (amount < 1 && !keepTwoDigits) {
-                formatDecimal(amount)
-            }else {
-                val lengthInt = "${amount.toInt()}".length
-                if (lengthInt < 8 && !keepTwoDigits) {
-                    getStringByDigits(amount, 8 - lengthInt)
-                }else{
-                    formatNumberInfo(amount).toString()
-                }
+            if ("$amount".length > 8) {
+                "${formatDecimal(amount).toDouble()}"
+            } else {
+                "$amount"
             }
+        } else if (amount < 1 && !keepTwoDigits) {
+            formatDecimal(amount)
+        } else {
+            val lengthInt = "${amount.toInt()}".length
+            if (lengthInt < 8 && !keepTwoDigits) {
+                getStringByDigits(amount, 8 - lengthInt)
+            } else {
+                formatNumberInfo(amount).toString()
+            }
+        }
 //        while (result.contains('.')&& result.endsWith('0')){
 //        }
         return result
