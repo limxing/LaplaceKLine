@@ -159,7 +159,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         xAxisPrice.gridColor = Color.RED
         xAxisPrice.axisMinimum = -0.5f
         xAxisPrice.setAvoidFirstLastClipping(true)//避免超出界面不绘制
-        xAxisPrice.setLabelCount(4, true)
+        xAxisPrice.setLabelCount(3, false)
         xAxisPrice.textColor = mAxisColor
         xAxisPrice.position = XAxis.XAxisPosition.BOTTOM
         xAxisPrice.valueFormatter = IAxisValueFormatter { value, axis ->
@@ -177,7 +177,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
 
         //横向网格，Y轴数据，左边的Y轴
         val axisLeftPrice = price_chart.axisLeft
-        axisLeftPrice.setLabelCount(5, false)
+        axisLeftPrice.setLabelCount(6 , true)//force true 强制固定Y轴的个数，false 动态改变Y轴
 //        axisLeftPrice.spaceBottom = 10f
         axisLeftPrice.setDrawLabels(true)
         axisLeftPrice.setDrawGridLines(true)//横向的网格 Y值
@@ -978,6 +978,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
 
     fun updateValueUnSelected() {
         k_info_mark.closeHightLight()
+        lastHisData = null
     }
 
 }
