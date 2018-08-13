@@ -31,6 +31,8 @@ import java.util.ArrayList
 open class BaseView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
     var mDateFormat = "yyyy-MM-dd"
+    protected var dateLableCount = 4
+
 
     protected var mDecreasingColor: Int = 0
     protected var mIncreasingColor: Int = 0
@@ -165,10 +167,5 @@ open class BaseView @JvmOverloads constructor(context: Context, attrs: Attribute
         val description = chart.description
         description.text = text
     }
-
-    fun setDateFormat(mDateFormat: String) {
-        this.mDateFormat = mDateFormat
-    }
-
 
 }

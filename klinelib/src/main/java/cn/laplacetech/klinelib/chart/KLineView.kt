@@ -2,6 +2,7 @@ package cn.laplacetech.klinelib.chart
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Paint
 import android.support.v4.content.ContextCompat
@@ -39,6 +40,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
 
     private var kLineViewListener: KLineViewListener? = null
 
+
     /**
      * last price
      */
@@ -49,10 +51,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
      */
     private var mLastClose: Double = 0.0
 
-    /**
-     * the digits of the symbol
-     */
-    private val mDigits = 2
+
     private var mCoupleChartGestureListener: CoupleChartGestureListener? = null
 
     private var showLimitLine: Boolean
@@ -177,7 +176,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
 
         //横向网格，Y轴数据，左边的Y轴
         val axisLeftPrice = price_chart.axisLeft
-        axisLeftPrice.setLabelCount(6 , true)//force true 强制固定Y轴的个数，false 动态改变Y轴
+        axisLeftPrice.setLabelCount(6, true)//force true 强制固定Y轴的个数，false 动态改变Y轴
 //        axisLeftPrice.spaceBottom = 10f
         axisLeftPrice.setDrawLabels(true)
         axisLeftPrice.setDrawGridLines(true)//横向的网格 Y值
@@ -238,6 +237,42 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         price_chart.setOnTouchListener(ChartInfoViewHandler(price_chart))
     }
 
+    /**
+     * 初始化方法，带有格式化时间参数
+     */
+    fun initData(hisDatas: List<HisData>, dateFormatString: String?) {
+
+        if (!dateFormatString.isNullOrEmpty()) {
+            dateFormatString?.let { this.setDateFormat(it) }
+        }
+        this.initData(hisDatas)
+
+    }
+
+    fun setDateFormat(mDateFormat: String) {
+        this.mDateFormat = mDateFormat
+        dateLableCount = if (mDateFormat.length > 8){
+            3
+        }else {
+            5
+        }
+        price_chart.xAxis.setLabelCount(dateLableCount,false)
+    }
+
+    /**
+     * 屏幕翻转设置时间个数
+     */
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        var dateCount = dateLableCount
+        if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            dateCount = (dateCount * 1.6).toInt()
+        }
+        price_chart.xAxis.setLabelCount(dateCount,false)
+    }
+
+
 
     /**
      * 初始化方法
@@ -282,11 +317,11 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         if (kdj_chart.description.isEnabled)
             setDescription(kdj_chart, String.format(Locale.getDefault(), "K:%.2f  D:%.2f  J:%.2f",
                     hisData?.k, hisData?.d, hisData?.j))
-
+        price_chart.highlightValue(null, true)//取消高亮 详细显示
         //为蒙版设置时间格式化
         k_info_mark.setDataFormatString(mDateFormat, isRedDown)//时间高亮由系统控件展示,但是红绿还需要控制
-        price_chart.highlightValue(null, true)//取消高亮 详细显示
         (price_chart.getXMarkView() as LineChartXMarkerView).dateFormatString = mDateFormat
+
     }
 
     /**
