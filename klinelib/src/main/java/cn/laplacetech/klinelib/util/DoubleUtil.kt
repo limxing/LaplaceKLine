@@ -63,10 +63,10 @@ object DoubleUtil {
      */
     fun amountConversion(amount: Double, keepTwoDigits: Boolean): String {
         val result: String
-        result = if (amount < 0.001 && !keepTwoDigits) {
+        result = if (amount < 0.001) {
             if ("$amount".length > 8) {
                 "${formatDecimal(amount).toDouble()}"
-            } else {
+            } else  {
                 "$amount"
             }
         } else if (amount < 1 && !keepTwoDigits) {
