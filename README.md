@@ -19,7 +19,7 @@ allprojects {
 App level build.gradle
 ```
 dependencies {
-    implementation 'com.github.limxing:LaplaceKLine:1.0.9'
+    implementation 'com.github.limxing:LaplaceKLine:1.1.1'
 }
 ```
 
