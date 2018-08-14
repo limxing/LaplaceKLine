@@ -5,6 +5,8 @@ lilifeng@laplacetech.cn
 
 Powered By [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)
 
+<img src="./WechatIMG16.jpg" width="300" height="305"/> &nbsp;<img src="./WechatIMG15.jpg" width="300" height="305"/>
+
 ## Usage
 #### Gradle
 
