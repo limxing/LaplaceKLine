@@ -178,6 +178,7 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         val axisLeftPrice = price_chart.axisLeft
         axisLeftPrice.setLabelCount(6, true)//force true 强制固定Y轴的个数，false 动态改变Y轴
 //        axisLeftPrice.spaceBottom = 10f
+        axisLeftPrice.setDrawZeroLine(false)
         axisLeftPrice.setDrawLabels(true)
         axisLeftPrice.setDrawGridLines(true)//横向的网格 Y值
         axisLeftPrice.gridColor = getColor(R.color.chart_border)//网格颜色
@@ -251,12 +252,12 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
 
     fun setDateFormat(mDateFormat: String) {
         this.mDateFormat = mDateFormat
-        dateLableCount = if (mDateFormat.length > 8){
+        dateLableCount = if (mDateFormat.length > 8) {
             3
-        }else {
+        } else {
             5
         }
-        price_chart.xAxis.setLabelCount(dateLableCount,false)
+        price_chart.xAxis.setLabelCount(dateLableCount, false)
     }
 
     /**
@@ -269,9 +270,8 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
         if (newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             dateCount = (dateCount * 1.6).toInt()
         }
-        price_chart.xAxis.setLabelCount(dateCount,false)
+        price_chart.xAxis.setLabelCount(dateCount, false)
     }
-
 
 
     /**
@@ -906,8 +906,8 @@ class KLineView @JvmOverloads constructor(var mContext: Context, attrs: Attribut
      * 设置虚线表示当前价格
      */
     private fun setLimitLine() {
-        val limitLine = LimitLine(mData.last().close?.toFloat() ?: 0f, "${mData.last().close
-                ?: 0.0}")
+        val limitLine = LimitLine(mData.last().close?.toFloat() ?: 0f, DoubleUtil.amountConversion(mData.last().close
+                ?: 0.0, false))
         limitLine.enableDashedLine(15f, 15f, 0f)
         limitLine.lineColor = getColor(R.color.limit_color)
         limitLine.labelPosition = LimitLine.LimitLabelPosition.LEFT_CENTER
