@@ -1,6 +1,6 @@
 # LaplaceKLine
-lilifeng@laplacetech.cn
-拉普拉斯K线图表
+leefengme@163.com
+K线图表
 [![](https://jitpack.io/v/limxing/LaplaceKLine.svg)](https://jitpack.io/#limxing/LaplaceKLine)
 
 Powered By [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)
